@@ -1,0 +1,41 @@
+G:\SHAFEEQU\Projects\InMag For Shop\InMag-V.1.6\InMag V.16\obj\x86\Debug\Interop.MSORUNLib.dll
+G:\SHAFEEQU\Projects\InMag For Shop\InMag-V.1.6\InMag V.16\obj\x86\Debug\InMag V.16.csproj.ResolveComReference.cache
+G:\SHAFEEQU\Projects\InMag For Shop\InMag-V.1.6\InMag V.16\obj\x86\Debug\InMag_V._16.frmCashEntry.resources
+G:\SHAFEEQU\Projects\InMag For Shop\InMag-V.1.6\InMag V.16\obj\x86\Debug\InMag_V._16.frmArea.resources
+G:\SHAFEEQU\Projects\InMag For Shop\InMag-V.1.6\InMag V.16\obj\x86\Debug\InMag_V._16.frmCustomerMaster.resources
+G:\SHAFEEQU\Projects\InMag For Shop\InMag-V.1.6\InMag V.16\obj\x86\Debug\InMag_V._16.frmItemMaster.resources
+G:\SHAFEEQU\Projects\InMag For Shop\InMag-V.1.6\InMag V.16\obj\x86\Debug\InMag_V._16.frmLogin.resources
+G:\SHAFEEQU\Projects\InMag For Shop\InMag-V.1.6\InMag V.16\obj\x86\Debug\InMag_V._16.frmMenu.resources
+G:\SHAFEEQU\Projects\InMag For Shop\InMag-V.1.6\InMag V.16\obj\x86\Debug\InMag_V._16.frmOrderedItems.resources
+G:\SHAFEEQU\Projects\InMag For Shop\InMag-V.1.6\InMag V.16\obj\x86\Debug\InMag_V._16.frmPartyMaster.resources
+G:\SHAFEEQU\Projects\InMag For Shop\InMag-V.1.6\InMag V.16\obj\x86\Debug\InMag_V._16.frmAddStock.resources
+G:\SHAFEEQU\Projects\InMag For Shop\InMag-V.1.6\InMag V.16\obj\x86\Debug\InMag_V._16.frmSalesGST.resources
+G:\SHAFEEQU\Projects\InMag For Shop\InMag-V.1.6\InMag V.16\obj\x86\Debug\InMag_V._16.frmSaleSheet.resources
+G:\SHAFEEQU\Projects\InMag For Shop\InMag-V.1.6\InMag V.16\obj\x86\Debug\InMag_V._16.frmStaffRegistration.resources
+G:\SHAFEEQU\Projects\InMag For Shop\InMag-V.1.6\InMag V.16\obj\x86\Debug\InMag_V._16.frmStockView.resources
+G:\SHAFEEQU\Projects\InMag For Shop\InMag-V.1.6\InMag V.16\obj\x86\Debug\InMag_V._16.Properties.Resources.resources
+G:\SHAFEEQU\Projects\InMag For Shop\InMag-V.1.6\InMag V.16\obj\x86\Debug\InMag V.16.csproj.GenerateResource.Cache
+G:\SHAFEEQU\Projects\InMag For Shop\InMag-V.1.6\InMag V.16\bin\Debug\Reports\rptBill.rpt
+G:\SHAFEEQU\Projects\InMag For Shop\InMag-V.1.6\InMag V.16\bin\Debug\Reports\rptOrderSheet.rpt
+G:\SHAFEEQU\Projects\InMag For Shop\InMag-V.1.6\InMag V.16\bin\Debug\Reports\rptSaleSheet.rpt
+G:\SHAFEEQU\Projects\InMag For Shop\InMag-V.1.6\InMag V.16\bin\Debug\Reports\rptStock.rpt
+G:\SHAFEEQU\Projects\InMag For Shop\InMag-V.1.6\InMag V.16\bin\Debug\Reports\rptBill.cs
+G:\SHAFEEQU\Projects\InMag For Shop\InMag-V.1.6\InMag V.16\bin\Debug\Reports\rptOrderSheet.cs
+G:\SHAFEEQU\Projects\InMag For Shop\InMag-V.1.6\InMag V.16\bin\Debug\Reports\rptSaleSheet.cs
+G:\SHAFEEQU\Projects\InMag For Shop\InMag-V.1.6\InMag V.16\bin\Debug\Reports\rptStock.cs
+G:\SHAFEEQU\Projects\InMag For Shop\InMag-V.1.6\InMag V.16\bin\Debug\InMag.exe.config
+G:\SHAFEEQU\Projects\InMag For Shop\InMag-V.1.6\InMag V.16\bin\Debug\InMag.exe.manifest
+G:\SHAFEEQU\Projects\InMag For Shop\InMag-V.1.6\InMag V.16\bin\Debug\InMag.application
+G:\SHAFEEQU\Projects\InMag For Shop\InMag-V.1.6\InMag V.16\bin\Debug\InMag.exe
+G:\SHAFEEQU\Projects\InMag For Shop\InMag-V.1.6\InMag V.16\bin\Debug\InMag.pdb
+G:\SHAFEEQU\Projects\InMag For Shop\InMag-V.1.6\InMag V.16\bin\Debug\Microsoft.Office.Interop.Excel.dll
+G:\SHAFEEQU\Projects\InMag For Shop\InMag-V.1.6\InMag V.16\bin\Debug\Interop.MSORUNLib.dll
+G:\SHAFEEQU\Projects\InMag For Shop\InMag-V.1.6\InMag V.16\obj\x86\Debug\InMag.exe.manifest
+G:\SHAFEEQU\Projects\InMag For Shop\InMag-V.1.6\InMag V.16\obj\x86\Debug\InMag.application
+G:\SHAFEEQU\Projects\InMag For Shop\InMag-V.1.6\InMag V.16\obj\x86\Debug\InMag.exe
+G:\SHAFEEQU\Projects\InMag For Shop\InMag-V.1.6\InMag V.16\obj\x86\Debug\InMag.pdb
+G:\SHAFEEQU\Projects\InMag GST\InMag-GST\InMag-V.1.6\InMag V.16\bin\Debug\InMag.exe.config
+G:\SHAFEEQU\Projects\InMag GST\InMag-GST\InMag-V.1.6\InMag V.16\obj\x86\Debug\Interop.MSORUNLib.dll
+G:\SHAFEEQU\Projects\InMag GST\InMag-GST\InMag-V.1.6\InMag V.16\obj\x86\Debug\InMag V.16.csproj.ResolveComReference.cache
+G:\SHAFEEQU\Projects\InMag GST\InMag-GST\InMag-V.1.6\InMag V.16\obj\x86\Debug\InMag.exe
+G:\SHAFEEQU\Projects\InMag GST\InMag-GST\InMag-V.1.6\InMag V.16\obj\x86\Debug\InMag.pdb
