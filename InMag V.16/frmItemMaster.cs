@@ -141,7 +141,7 @@ namespace InMag_V._16
             txtSGST.Text = "";
             txtIGST.Text = "";
             txtISCGST.Text = "";
-            txtISCGST.Text = "";
+            txtISSGST.Text = "";
             txtISIGST.Text = "";
             txtItemCode.Focus();
         }

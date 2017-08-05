@@ -10,7 +10,7 @@ namespace InMag_V._16
     public sealed class Connections
     {
         private static Connections instance = null;
-        string ConnectionString = @"Data Source=" + System.Configuration.ConfigurationSettings.AppSettings["Server"] + ";Initial Catalog=Inventory;Integrated Security=True;";
+        string ConnectionString = @"Data Source=" + System.Configuration.ConfigurationSettings.AppSettings["Server"] + ";Initial Catalog=Inventory_GST;Integrated Security=True;";
 
         //string ConnectionString = @"Data Source=USER-PC;Initial Catalog=Inventory;Integrated Security=True;";
         public SqlConnection con;
@@ -45,6 +45,15 @@ namespace InMag_V._16
             cmd.ExecuteNonQuery();
         }
 
+        public Int32 ExuecuteQueryWithReturn(string Query_)
+        {
+            using (SqlCommand cmd = new SqlCommand(Query_, con))
+            {
+                int modified = (int)cmd.ExecuteScalar();
+                return modified;
+            }
+        
+        }
 
         public SqlDataReader DataReader(string Query_)
         {

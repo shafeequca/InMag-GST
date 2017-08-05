@@ -17,14 +17,21 @@ namespace InMag_V._16
         public frmSalesGST()
         {
             InitializeComponent();
-            this.cboArea.SelectionChangeCommitted += new System.EventHandler(this.cboArea_SelectionChangeCommitted);
             this.cboAreaSearch.SelectionChangeCommitted += new System.EventHandler(this.cboAreaSearch_SelectionChangeCommitted);
 
             this.ItemDisplayGrid.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ItemDisplayGrid_KeyDown);
-            this.cboCustomer.SelectionChangeCommitted += new System.EventHandler(this.cboCustomer_SelectionChangeCommitted);
+
+            this.CustomerGrid.KeyDown += new System.Windows.Forms.KeyEventHandler(this.CustomerGrid_KeyDown);
+
             this.cboArea.KeyDown += new System.Windows.Forms.KeyEventHandler(this.cboArea_KeyDown);
             this.cboAreaSearch.KeyDown += new System.Windows.Forms.KeyEventHandler(this.cboAreaSearch_KeyDown);
-            this.cboCustomer.KeyDown += new System.Windows.Forms.KeyEventHandler(this.cboCustomer_KeyDown);
+            this.txtCustomer.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtCustomer_KeyDown);
+            this.txtPhone.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPhone_KeyDown);
+            this.txtState.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtState_KeyDown);
+            this.txtStateCode.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtStateCode_KeyDown);
+            this.txtVehicle.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtVehicle_KeyDown);
+            this.txtGSTIN.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtGSTIN_KeyDown);
+
             this.txtItemcode.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtItemcode_KeyDown);
             this.txtQuantity.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtQuantity_KeyDown);
             this.txtItems.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtItems_KeyDown);
@@ -53,6 +60,7 @@ namespace InMag_V._16
             }
         }
         private void NumberOnly_KeyPress(object sender, KeyPressEventArgs e)
+        
         {
             TextBox tb = sender as TextBox;
             if (!(e.KeyChar == 8 || e.KeyChar == 46 || e.KeyChar == 13 || (e.KeyChar >= 48 && e.KeyChar <= 57)))
@@ -93,6 +101,7 @@ namespace InMag_V._16
         private void frmSales_Load(object sender, EventArgs e)
         {
             ds = new DataSet1();
+            cboType.SelectedIndex = 0;
             comboLoad();
             chkWholeSale.Checked = false;
             txtItemcode.Tag = null;
@@ -113,7 +122,15 @@ namespace InMag_V._16
             Connections.Instance.ExecuteQueries(query);
             query = "select billno from tblSettings";
             DataTable dt = (DataTable)Connections.Instance.ShowDataInGridView(query);
-            txtBillno.Text = (Convert.ToInt32(dt.Rows[0][0].ToString()) + 1).ToString();
+            if (dt.Rows.Count > 0)
+                txtBillno.Text = (Convert.ToInt32(dt.Rows[0][0].ToString()) + 1).ToString();
+            else
+            {
+                txtBillno.Text = "1";
+                query = "INSERT INTO tblSettings(billno) VALUES('1')";
+                Connections.Instance.ExecuteQueries(query);
+
+            }
         
         }
         private void SearchGridLoad()
@@ -195,35 +212,7 @@ namespace InMag_V._16
                
             }
         }
-        private void cboArea_SelectionChangeCommitted(object sender, EventArgs e)
-        {
-            if (cboArea.SelectedValue != null && cboArea.Text !="")
-            {
-                System.Data.DataRowView DR = (System.Data.DataRowView)cboArea.Items[cboArea.SelectedIndex];
-                string query = "select custId,Customer from tblCustomer where areaId='" + DR.Row[0].ToString() + "' order by Customer";
-                cboCustomer.DataSource = Connections.Instance.ShowDataInGridView(query);
-                cboCustomer.DisplayMember = "Customer";
-                cboCustomer.ValueMember = "custId";
-                cboCustomer.SelectedIndex = -1;
-                cboCustomer.Text = "";
-                txtPlace.Text = "";
-                txtCBalance.Text = "";
-            }
-        }
-        private void cboCustomer_SelectionChangeCommitted(object sender, EventArgs e)
-        {
-            if (cboCustomer.SelectedValue != null && cboCustomer.Text !="")
-            {
-                System.Data.DataRowView DR = (System.Data.DataRowView)cboCustomer.Items[cboCustomer.SelectedIndex];
-                string query = "select Place,creditBal from tblCustomer where custId='" + DR.Row[0].ToString() + "'";
-                DataTable dt = (DataTable)Connections.Instance.ShowDataInGridView(query);
-                if (dt.Rows.Count > 0)
-                {
-                    txtPlace.Text = dt.Rows[0][0].ToString();
-                    txtCBalance.Text = dt.Rows[0][1].ToString();
-                }
-            }
-        }
+        
         
         
         private void cboAreaSearch_KeyDown(object sender, KeyEventArgs e)
@@ -240,19 +229,26 @@ namespace InMag_V._16
             if (e.KeyData == Keys.Enter)
             
             {
-                cboArea_SelectionChangeCommitted(null, null);
-                cboCustomer.Focus();
+                txtCustomer.Focus();
+                txtCustomer_TextChanged(null, null);
+                CustomerGrid.Visible = true;
 
             }
         }
 
-        private void cboCustomer_KeyDown(object sender, KeyEventArgs e)
+        private void txtCustomer_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyData == Keys.Enter)
+            if (e.KeyData == Keys.Down)
             {
-                cboCustomer_SelectionChangeCommitted(null, null);
-                txtItems.Focus();
+                txtCustomer_TextChanged(null, null);
+                CustomerGrid.Focus();
             }
+            else if (e.KeyData == Keys.Enter)
+            {
+                CustomerGrid.Visible = false;
+                txtAddress.Focus();
+            }
+
         }
         private void txtItemcode_KeyDown(object sender, KeyEventArgs e)
         {
@@ -284,13 +280,9 @@ namespace InMag_V._16
 
         private void txtQuantity_TextChanged(object sender, EventArgs e)
         {
-            if (txtQuantity.Text.Trim() == "")
-                txtQuantity.Text = "0";
-            if (txtRate.Text.Trim() == "")
-                txtRate.Text = "0";
             try
             {
-                txtTotal.Text = (Convert.ToDouble(txtQuantity.Text) * Convert.ToDouble(txtRate.Text)).ToString();
+                txtTotal.Text = (Convert.ToDouble(txtQuantity.Text == "" ? "0" : txtQuantity.Text) * Convert.ToDouble(txtRate.Text == "" ? "0" : txtRate.Text)).ToString();
             }
 
             catch
@@ -301,13 +293,9 @@ namespace InMag_V._16
 
         private void txtRate_TextChanged(object sender, EventArgs e)
         {
-            if (txtRate.Text.Trim() == "")
-                txtRate.Text = "0";
-            if (txtQuantity.Text.Trim() == "")
-                txtQuantity.Text = "0";
             try
             {
-                txtTotal.Text = (Convert.ToDouble(txtQuantity.Text) * Convert.ToDouble(txtRate.Text)).ToString();
+                txtTotal.Text = (Convert.ToDouble(txtQuantity.Text == "" ? "0" : txtQuantity.Text) * Convert.ToDouble(txtRate.Text == "" ? "0" : txtRate.Text)).ToString();
             }
             catch
             { }
@@ -344,9 +332,80 @@ namespace InMag_V._16
                 query = "select sum(total) from tblTemp";
                 DataTable dt = (DataTable)Connections.Instance.ShowDataInGridView(query);
                 if (dt.Rows.Count > 0)
-                    txtGrand.Text = dt.Rows[0][0].ToString();
+                    txtBillTotal.Text = dt.Rows[0][0].ToString();
+                taxCalc();
+                CustomerGrid.Visible = false;
+                itemView.Visible = false;
             }
             catch { }
+        }
+        private void taxCalc()
+        {
+            try
+            {
+                double discount = 0;
+                if (txtDiscount.Text == "." || txtDiscount.Text.Trim() == "")
+                    discount = 0;
+                else
+                    discount = Convert.ToDouble(txtDiscount.Text);
+                double cash = 0;
+                if (txtCash.Text == "." || txtCash.Text.Trim() == "")
+                    cash = 0;
+                else
+                    cash = Convert.ToDouble(txtCash.Text);
+                double disc = discount / ItemGrid.RowCount;
+                string query = "UPDATE t "+
+                                    "SET CGSTPER=tt.CGSTPER"+
+	                                ",CGST=tt.CGST"+
+	                                ",SGSTPER=tt.SGSTPER"+
+	                                ",SGST=tt.SGST"+
+	                                ",IGSTPER=tt.IGSTPER"+
+	                                ",IGST=tt.IGST "+
+                                    ",disc="+disc+" "+
+                                "FROM tblTemp t "+
+                                "INNER JOIN "+
+                                "(SELECT t.itemId,i.CGSTPER,CONVERT(DECIMAL(18,2),SUM((t.Total-" + disc + ")*(ISNULL(i.CGSTPER,0)/100))) AS CGST,i.SGSTPER,CONVERT(DECIMAL(18,2),SUM((t.Total-" + disc + ")*(ISNULL(i.SGSTPER,0)/100))) AS SGST,i.IGSTPER,CONVERT(DECIMAL(18,2),SUM((t.Total-" + disc + ")*(ISNULL(i.IGSTPER,0)/100))) AS IGST from tblTemp t INNER JOIN tblItem i ON i.itemId=t.itemId " +
+                                "group by i.CGSTPER,i.SGSTPER,i.IGSTPER,t.itemId) tt "+
+                                "ON t.itemId=tt.itemId ";
+                if (chkInterState.Checked == true)
+                {
+                    query = "UPDATE t " +
+                                    "SET CGSTPER=tt.ISCGSTPER" +
+                                    ",CGST=tt.CGST" +
+                                    ",SGSTPER=tt.ISSGSTPER" +
+                                    ",SGST=tt.SGST" +
+                                    ",IGSTPER=tt.ISIGSTPER" +
+                                    ",IGST=tt.IGST " +
+                                    ",disc=" + disc + " " +
+                                "FROM tblTemp t " +
+                                "INNER JOIN " +
+                                "(SELECT t.itemId,i.ISCGSTPER,CONVERT(DECIMAL(18,2),SUM((t.Total-" + disc + ")*(ISNULL(i.ISCGSTPER,0)/100))) AS CGST,i.ISSGSTPER,CONVERT(DECIMAL(18,2),SUM((t.Total-" + disc + ")*(ISNULL(i.ISSGSTPER,0)/100))) AS SGST,i.ISIGSTPER,CONVERT(DECIMAL(18,2),SUM((t.Total-" + disc + ")*(ISNULL(i.ISIGSTPER,0)/100))) AS IGST from tblTemp t INNER JOIN tblItem i ON i.itemId=t.itemId " +
+                                "group by i.ISCGSTPER,i.ISSGSTPER,i.ISIGSTPER,t.itemId) tt " +
+                                "ON t.itemId=tt.itemId ";
+                }
+                Connections.Instance.ExecuteQueries(query);
+                query = "UPDATE tblTemp SET GST=CGST+SGST+IGST";
+                Connections.Instance.ExecuteQueries(query);
+                query = "select CONVERT(DECIMAL(18,2),SUM(t.CGST)),CONVERT(DECIMAL(18,2),SUM(t.SGST)),CONVERT(DECIMAL(18,2),SUM(t.IGST)) from tblTemp t";
+                
+                DataTable dt = (DataTable)Connections.Instance.ShowDataInGridView(query);
+                if (dt.Rows.Count > 0)
+                {
+                    txtCGST.Text = dt.Rows[0][0].ToString();
+                    txtSGST.Text = dt.Rows[0][1].ToString();
+                    txtIGST.Text = dt.Rows[0][2].ToString();
+
+                }
+               
+                txtGST.Text = (Convert.ToDouble(txtCGST.Text == "" ? "0" : txtCGST.Text) + Convert.ToDouble(txtSGST.Text == "" ? "0" : txtSGST.Text) + Convert.ToDouble(txtIGST.Text == "" ? "0" : txtIGST.Text)).ToString();
+                txtGrand.Text = ((Convert.ToDouble(txtBillTotal.Text == "" ? "0" : txtBillTotal.Text) + Convert.ToDouble(txtGST.Text == "" ? "0" : txtGST.Text)) - discount).ToString();
+                txtBalance.Text = ((Convert.ToDouble(txtGrand.Text == "" ? "0" : txtGrand.Text) + Convert.ToDouble(txtCBalance.Text == "" ? "0" : txtCBalance.Text)) - cash).ToString();
+            }
+            catch {
+                txtGST.Text = "";
+                txtGrand.Text = "";
+                txtBalance.Text = "";
+            }
         }
         private void txtRate_KeyDown(object sender, KeyEventArgs e)
         {
@@ -374,7 +433,7 @@ namespace InMag_V._16
                     DataTable dt = (DataTable)Connections.Instance.ShowDataInGridView(query);
                     query = "select qty from tblTemp where itemId='" + txtItems.Tag.ToString() + "'";
                     DataTable dt1 = (DataTable)Connections.Instance.ShowDataInGridView(query);
-                    if (Convert.ToDouble(dt.Rows[0][1].ToString()) > Convert.ToDouble(txtRate.Text))
+                    if (Convert.ToDouble(dt.Rows[0][1].ToString()) > Convert.ToDouble(txtRate.Text == "" ? "0" : txtRate.Text))
                     {
                         MessageBox.Show("Minimum rate level reached" + Environment.NewLine + "Please enter the rate >= " + dt.Rows[0][1].ToString());
                         txtRate.Text = dt.Rows[0][1].ToString();
@@ -391,58 +450,58 @@ namespace InMag_V._16
                         {
                             if (txtItemcode.Tag == null)
                             {
-                                double newQty = Convert.ToDouble(txtQuantity.Text) + Convert.ToDouble(dt1.Rows[0][0].ToString());
-                                double newTotal = newQty * Convert.ToDouble(txtRate.Text);
+                                double newQty = Convert.ToDouble(txtQuantity.Text == "" ? "0" : txtQuantity.Text) + Convert.ToDouble(dt1.Rows[0][0].ToString());
+                                double newTotal = newQty * Convert.ToDouble(txtRate.Text == "" ? "0" : txtRate.Text);
                                 if (Convert.ToDouble(dt.Rows[0][0].ToString()) < newQty)
                                 {
                                     DialogResult dialogResult = MessageBox.Show("No sufficient stock." + Environment.NewLine + "Do you want to continue with negative stock?", "Sale Voucher", MessageBoxButtons.YesNo);
                                     if (dialogResult == DialogResult.Yes)
-                                        query = "update tblTemp set Qty='" + newQty + "',rate='" + Convert.ToDouble(txtRate.Text.Trim()) + "',total='" + newTotal + "' where itemId='" + txtItems.Tag.ToString() + "'";
+                                        query = "update tblTemp set Qty='" + newQty + "',rate='" + Convert.ToDouble(txtRate.Text.Trim() == "" ? "0" : txtRate.Text) + "',total='" + newTotal + "' where itemId='" + txtItems.Tag.ToString() + "'";
                                 }
                                 else
-                                    query = "update tblTemp set Qty='" + newQty + "',rate='" + Convert.ToDouble(txtRate.Text.Trim()) + "',total='" + newTotal + "' where itemId='" + txtItems.Tag.ToString() + "'";
+                                    query = "update tblTemp set Qty='" + newQty + "',rate='" + Convert.ToDouble(txtRate.Text.Trim() == "" ? "0" : txtRate.Text) + "',total='" + newTotal + "' where itemId='" + txtItems.Tag.ToString() + "'";
                             }
                             else
                             {
-                                if (Convert.ToDouble(dt.Rows[0][0].ToString()) < Convert.ToDouble(txtQuantity.Text))
+                                if (Convert.ToDouble(dt.Rows[0][0].ToString()) < Convert.ToDouble(txtQuantity.Text == "" ? "0" : txtQuantity.Text))
                                 {
                                     DialogResult dialogResult = MessageBox.Show("No sufficient stock." + Environment.NewLine + "Do you want to continue with negative stock?", "Sale Voucher", MessageBoxButtons.YesNo);
                                     if (dialogResult == DialogResult.Yes)
-                                        query = "update tblTemp set Qty='" + Convert.ToDouble(txtQuantity.Text.Trim()) + "',rate='" + Convert.ToDouble(txtRate.Text.Trim()) + "',total='" + Convert.ToDouble(txtTotal.Text.Trim()) + "' where itemId='" + Convert.ToDouble(txtItemcode.Tag.ToString()) + "'";
+                                        query = "update tblTemp set Qty='" + Convert.ToDouble(txtQuantity.Text.Trim() == "" ? "0" : txtQuantity.Text) + "',rate='" + Convert.ToDouble(txtRate.Text.Trim() == "" ? "0" : txtRate.Text) + "',total='" + Convert.ToDouble(txtTotal.Text.Trim() == "" ? "0" : txtTotal.Text) + "' where itemId='" + Convert.ToDouble(txtItemcode.Tag.ToString()) + "'";
                                 }
                                 else
-                                    query = "update tblTemp set Qty='" + Convert.ToDouble(txtQuantity.Text.Trim()) + "',rate='" + Convert.ToDouble(txtRate.Text.Trim()) + "',total='" + Convert.ToDouble(txtTotal.Text.Trim()) + "' where itemId='" + Convert.ToDouble(txtItemcode.Tag.ToString()) + "'";
+                                    query = "update tblTemp set Qty='" + Convert.ToDouble(txtQuantity.Text.Trim() == "" ? "0" : txtQuantity.Text) + "',rate='" + Convert.ToDouble(txtRate.Text.Trim() == "" ? "0" : txtRate.Text) + "',total='" + Convert.ToDouble(txtTotal.Text.Trim() == "" ? "0" : txtTotal.Text) + "' where itemId='" + Convert.ToDouble(txtItemcode.Tag.ToString()) + "'";
                             }
                         }
                         else
                         {
                             if (txtItemcode.Tag == null)
                             {
-                                double newQty = Convert.ToDouble(txtQuantity.Text) + Convert.ToDouble(dt1.Rows[0][0].ToString());
-                                double newTotal = newQty * Convert.ToDouble(txtRate.Text);
+                                double newQty = Convert.ToDouble(txtQuantity.Text == "" ? "0" : txtQuantity.Text) + Convert.ToDouble(dt1.Rows[0][0].ToString());
+                                double newTotal = newQty * Convert.ToDouble(txtRate.Text == "" ? "0" : txtRate.Text);
                                 query = "select qty from tblSaleTrans where itemId='" + txtItems.Tag.ToString() + "' and saleId='" + txtBillno.Tag.ToString() + "'";
                                 DataTable dt2 = (DataTable)Connections.Instance.ShowDataInGridView(query);
                                 if (Convert.ToDouble(dt.Rows[0][0].ToString()) < (newQty-Convert.ToDouble(dt2.Rows[0][0].ToString())))
                                 {
                                     DialogResult dialogResult = MessageBox.Show("No sufficient stock." + Environment.NewLine + "Do you want to continue with negative stock?", "Sale Voucher", MessageBoxButtons.YesNo);
                                     if (dialogResult == DialogResult.Yes)
-                                        query = "update tblTemp set Qty='" + newQty + "',rate='" + Convert.ToDouble(txtRate.Text.Trim()) + "',total='" + newTotal + "' where itemId='" + txtItems.Tag.ToString() + "'";
+                                        query = "update tblTemp set Qty='" + newQty + "',rate='" + Convert.ToDouble(txtRate.Text.Trim() == "" ? "0" : txtRate.Text) + "',total='" + newTotal + "' where itemId='" + txtItems.Tag.ToString() + "'";
                                 }
                                 else
-                                    query = "update tblTemp set Qty='" + newQty + "',rate='" + Convert.ToDouble(txtRate.Text.Trim()) + "',total='" + newTotal + "' where itemId='" + txtItems.Tag.ToString() + "'";
+                                    query = "update tblTemp set Qty='" + newQty + "',rate='" + Convert.ToDouble(txtRate.Text.Trim() == "" ? "0" : txtRate.Text) + "',total='" + newTotal + "' where itemId='" + txtItems.Tag.ToString() + "'";
                             }
                             else
                             {
                                 query = "select qty from tblSaleTrans where itemId='" + txtItems.Tag.ToString() + "' and saleId='" + txtBillno.Tag.ToString() + "'";
                                 DataTable dt2 = (DataTable)Connections.Instance.ShowDataInGridView(query);
-                                if (Convert.ToDouble(dt.Rows[0][0].ToString()) < (Convert.ToDouble(txtQuantity.Text) - Convert.ToDouble(dt2.Rows[0][0].ToString())))
+                                if (Convert.ToDouble(dt.Rows[0][0].ToString()) < (Convert.ToDouble(txtQuantity.Text == "" ? "0" : txtQuantity.Text) - Convert.ToDouble(dt2.Rows[0][0].ToString())))
                                 {
                                     DialogResult dialogResult = MessageBox.Show("No sufficient stock." + Environment.NewLine + "Do you want to continue with negative stock?", "Sale Voucher", MessageBoxButtons.YesNo);
                                     if (dialogResult == DialogResult.Yes)
-                                        query = "update tblTemp set Qty='" + Convert.ToDouble(txtQuantity.Text.Trim()) + "',rate='" + Convert.ToDouble(txtRate.Text.Trim()) + "',total='" + Convert.ToDouble(txtTotal.Text.Trim()) + "' where itemId='" + Convert.ToDouble(txtItemcode.Tag.ToString()) + "'";
+                                        query = "update tblTemp set Qty='" + Convert.ToDouble(txtQuantity.Text.Trim() == "" ? "0" : txtQuantity.Text) + "',rate='" + Convert.ToDouble(txtRate.Text.Trim() == "" ? "0" : txtRate.Text) + "',total='" + Convert.ToDouble(txtTotal.Text.Trim() == "" ? "0" : txtTotal.Text) + "' where itemId='" + Convert.ToDouble(txtItemcode.Tag.ToString()) + "'";
                                 }
                                 else
-                                    query = "update tblTemp set Qty='" + Convert.ToDouble(txtQuantity.Text.Trim()) + "',rate='" + Convert.ToDouble(txtRate.Text.Trim()) + "',total='" + Convert.ToDouble(txtTotal.Text.Trim()) + "' where itemId='" + Convert.ToDouble(txtItemcode.Tag.ToString()) + "'";
+                                    query = "update tblTemp set Qty='" + Convert.ToDouble(txtQuantity.Text.Trim() == "" ? "0" : txtQuantity.Text) + "',rate='" + Convert.ToDouble(txtRate.Text.Trim() == "" ? "0" : txtRate.Text) + "',total='" + Convert.ToDouble(txtTotal.Text.Trim() == "" ? "0" : txtTotal.Text) + "' where itemId='" + Convert.ToDouble(txtItemcode.Tag.ToString()) + "'";
                             }
                         }
                     }
@@ -455,14 +514,14 @@ namespace InMag_V._16
                             DataTable dt3 = (DataTable)Connections.Instance.ShowDataInGridView(query);
                             exQty = Convert.ToDouble(dt.Rows[0][0].ToString());
                         }
-                        if (Convert.ToDouble(dt.Rows[0][0].ToString()) < (Convert.ToDouble(txtQuantity.Text)-exQty))
+                        if (Convert.ToDouble(dt.Rows[0][0].ToString()) < (Convert.ToDouble(txtQuantity.Text == "" ? "0" : txtQuantity.Text)-exQty))
                         {
                             DialogResult dialogResult = MessageBox.Show("No sufficient stock." + Environment.NewLine + "Do you want to continue with negative stock?", "Sale Voucher", MessageBoxButtons.YesNo);
                             if (dialogResult == DialogResult.Yes)
-                                query = "insert into tblTemp values('" + txtItemcode.Text.Trim() + "','" + txtItems.Tag.ToString() + "','" + txtItems.Text.Trim() + "','" + Convert.ToDouble(txtQuantity.Text.Trim()) + "','" + Convert.ToDouble(txtRate.Text.Trim()) + "','" + Convert.ToDouble(txtTotal.Text.Trim()) + "')";
+                                query = "insert into tblTemp(itemCode,ItemId,ItemName,Qty,Rate,Total) values('" + txtItemcode.Text.Trim() + "','" + txtItems.Tag.ToString() + "','" + txtItems.Text.Trim() + "','" + Convert.ToDouble(txtQuantity.Text.Trim() == "" ? "0" : txtQuantity.Text) + "','" + Convert.ToDouble(txtRate.Text.Trim() == "" ? "0" : txtRate.Text) + "','" + Convert.ToDouble(txtTotal.Text.Trim() == "" ? "0" : txtTotal.Text) + "')";
                         }
                         else
-                            query = "insert into tblTemp values('" + txtItemcode.Text.Trim() + "','" + txtItems.Tag.ToString() + "','" + txtItems.Text.Trim() + "','" + Convert.ToDouble(txtQuantity.Text.Trim()) + "','" + Convert.ToDouble(txtRate.Text.Trim()) + "','" + Convert.ToDouble(txtTotal.Text.Trim()) + "')";
+                            query = "insert into tblTemp(itemCode,ItemId,ItemName,Qty,Rate,Total) values('" + txtItemcode.Text.Trim() + "','" + txtItems.Tag.ToString() + "','" + txtItems.Text.Trim() + "','" + Convert.ToDouble(txtQuantity.Text.Trim() == "" ? "0" : txtQuantity.Text) + "','" + Convert.ToDouble(txtRate.Text.Trim() == "" ? "0" : txtRate.Text) + "','" + Convert.ToDouble(txtTotal.Text.Trim() == "" ? "0" : txtTotal.Text) + "')";
                     }
                     Connections.Instance.ExecuteQueries(query);
                     dt.Dispose();
@@ -525,19 +584,24 @@ namespace InMag_V._16
         }
         private void Calculation()
         {
-            if (txtCBalance.Text == "")
-                txtCBalance.Text = "0";
-            if (txtGrand.Text == "")
-                txtGrand.Text = "0";
-            if (txtCash.Text == "")
-                txtCash.Text = "0";
-            if (txtDiscount.Text == "")
-                txtDiscount.Text = "0";
-            txtBalance.Text = ((Convert.ToDouble(txtCBalance.Text) + Convert.ToDouble(txtGrand.Text)) - Convert.ToDouble(txtCash.Text) - Convert.ToDouble(txtDiscount.Text)).ToString();
+            double disc = 0;
+            if (txtDiscount.Text == "." || txtDiscount.Text.Trim() == "")
+                disc = 0;
+            else
+                disc = Convert.ToDouble(txtDiscount.Text);
+            double cash = 0;
+            if (txtCash.Text == "." || txtCash.Text.Trim() == "")
+                cash = 0;
+            else
+                cash = Convert.ToDouble(txtCash.Text);
+
+            txtBalance.Text = ((Convert.ToDouble(txtCBalance.Text == "" ? "0" : txtCBalance.Text) + Convert.ToDouble(txtGrand.Text == "" ? "0" : txtGrand.Text)) - cash - disc).ToString();
         }
 
         private void txtDiscount_TextChanged(object sender, EventArgs e)
         {
+            taxCalc();
+
             Calculation();
 
         }
@@ -575,9 +639,19 @@ namespace InMag_V._16
         private void btnClear_Click(object sender, EventArgs e)
         {
             txtBillno.Tag = null;
+            chkInterState.Checked = false;
+            cboType.SelectedIndex = 0;
+            txtState.Text = "";
+            txtSGST.Text = "";
+            txtCGST.Text = "";
+            txtIGST.Text = "";
+            txtStateCode.Text = "";
+            txtPhone.Text = "";
+            txtGSTIN.Text = "";
+            txtVehicle.Text = "";
             cboArea.Enabled = true;
-            cboCustomer.Enabled = true;
-            txtPlace.Text = "";
+            txtCustomer.Tag = null;
+            txtAddress.Text = "";
             txtCBalance.Text = "";
             cmdItemClear_Click(null, null);
             ItemGrid.DataSource = null;
@@ -586,14 +660,16 @@ namespace InMag_V._16
             txtDiscount.Text ="";
             txtBalance.Text = "0";
             SetBillNo();
-            cboCustomer.SelectedIndex = -1;
-            cboCustomer.Text = "";
+            txtCustomer.Text = "";
+            txtBillTotal.Text = "";
+            CustomerGrid.Visible = false;
+
             //SearchGridLoad();
             //if(!(cboAreaSearch.SelectedIndex>=0 || txtBillNoSearch.Text.Trim()!="" || cboCustomerSearch.SelectedIndex>=0))
             //    btnReset_Click(null, null);
             //else if(cboAreaSearch.SelectedIndex>=0 && cboAreaSearch.SelectedIndex==cboArea.SelectedIndex)
                 btnReset_Click(null, null);
-            cboCustomer.Focus();
+            txtCustomer.Focus();
         }
 
         private void btnSearch_Click(object sender, EventArgs e)
@@ -620,22 +696,19 @@ namespace InMag_V._16
                 txtBillno.Text = SearchGrid.Rows[e.RowIndex].Cells[1].Value.ToString();
                 DatePicker.Value = Convert.ToDateTime(SearchGrid.Rows[e.RowIndex].Cells[2].Value);
                 cboArea.SelectedValue = SearchGrid.Rows[e.RowIndex].Cells[4].Value.ToString();
-                cboArea_SelectionChangeCommitted(null, null);
-                cboCustomer.SelectedValue = SearchGrid.Rows[e.RowIndex].Cells[5].Value.ToString();
-                cboCustomer_SelectionChangeCommitted(null, null);
-                cboCustomer.Text = SearchGrid.Rows[e.RowIndex].Cells[3].Value.ToString();
+                txtCustomer.Tag = SearchGrid.Rows[e.RowIndex].Cells[5].Value.ToString();
+                txtCustomer.Text = SearchGrid.Rows[e.RowIndex].Cells[3].Value.ToString();
                 txtCBalance.Text = SearchGrid.Rows[e.RowIndex].Cells[6].Value.ToString();
                 txtGrand.Text = SearchGrid.Rows[e.RowIndex].Cells[7].Value.ToString();
                 txtCash.Text = SearchGrid.Rows[e.RowIndex].Cells[8].Value.ToString();
                 txtDiscount.Text = SearchGrid.Rows[e.RowIndex].Cells[9].Value.ToString();
                 txtBalance.Text = SearchGrid.Rows[e.RowIndex].Cells[10].Value.ToString();
-                cboArea.Enabled = false;
-                cboCustomer.Enabled = false;
                 string query = "truncate table tblTemp";
                 Connections.Instance.ExecuteQueries(query);
-                query = "insert into tblTemp select i.Item_Code,i.itemId,i.Item_Name,s.qty,s.rate,s.total from tblSaleTrans s,tblItem i where s.itemId=i.itemId and saleId='" + txtBillno.Tag.ToString() + "'";
+                query = "insert into tblTemp(itemCode,ItemId,ItemName,Qty,Rate,Total) select i.Item_Code,i.itemId,i.Item_Name,s.qty,s.rate,s.total from tblSaleTrans s,tblItem i where s.itemId=i.itemId and saleId='" + txtBillno.Tag.ToString() + "'";
                 Connections.Instance.ExecuteQueries(query);
                 GridShow();
+                
             }
         }
         private void btnSave_Click(object sender, EventArgs e)
@@ -644,29 +717,67 @@ namespace InMag_V._16
                 //    MessageBox.Show("Please add items");
                 //else
                 //{
-
+            if (cboArea.Text == "")
+            {
+                MessageBox.Show("Please select an area");
+                cboArea.Focus();
+                return;
+            }
+            if (txtCustomer.Text == "")
+            {
+                MessageBox.Show("Please enter the customer name");
+                txtCustomer.Focus();
+                return;
+            }
+            if (ItemGrid.Rows.Count == 0)
+            {
+                MessageBox.Show("Please add items");
+                txtItems.Focus();
+                return;
+            }
                     DialogResult dialogResult = MessageBox.Show("Do you want to save this bill?", "Sale Voucher", MessageBoxButtons.YesNo);
                     if (dialogResult == DialogResult.Yes)
                     {
                         string query = "";
+                        int custId;
+
+                        if (txtCustomer.Tag == null)
+                        {
+                            query = "INSERT INTO tblCustomer(Customer,Phone,areaId,creditBal,GSTIN,Address,State,State_code) output INSERTED.custId " +
+                                "VALUES ('" + txtCustomer.Text + "','" + txtPhone.Text + "','" + ((cboArea.SelectedValue == null) ? 1 : cboArea.SelectedValue).ToString() + "','" + ((cboType.Text.ToUpper() == "CASH") ? "0" : txtBalance.Text).ToString() + "','" + txtGSTIN.Text + "','" + txtAddress.Text + "','" + txtState.Text + "','" + txtStateCode.Text + "')";
+                            custId = Connections.Instance.ExuecuteQueryWithReturn(query);
+                        }
+                        else
+                        {
+                            custId = Convert.ToInt32(txtCustomer.Tag.ToString());
+                            query = "UPDATE tblCustomer SET Customer='" + txtCustomer.Text + "',Phone='" + txtPhone.Text + "',GSTIN='" + txtGSTIN.Text + "',Address='" + txtAddress.Text + "',State='" + txtState.Text + "',State_code='" + txtStateCode.Text + "' WHERE custId='"+ txtCustomer.Tag +"'";
+                            Connections.Instance.ExecuteQueries(query);
+                        }
+
                         if (txtBillno.Tag == null)
                         {
-                            string custId = ((cboCustomer.SelectedValue == null) ? 1 : cboCustomer.SelectedValue).ToString();
 
-                            query = "insert into tblSales values('" + txtBillno.Text + "','" + DatePicker.Value.ToString("dd-MMM-yyyy") + "','" + cboArea.SelectedValue + "','" + custId + "','" + Convert.ToDouble(txtCBalance.Text) + "','" + Convert.ToDouble(txtGrand.Text) + "','" + Convert.ToDouble(txtCash.Text) + "','" + Convert.ToDouble(txtDiscount.Text) + "','" + Convert.ToDouble(txtBalance.Text) + "','false')";
+                            query = "insert into tblSales(BillNo,BillDate,areaId,custId,CBalance,GrandTotal,Cash,Discount,Balance,updated" +
+                                    ",VehicleNo,CGST,SGST,IGST,BillType,InterStateBill)" +
+                                    "values('" + txtBillno.Text + "','" + DatePicker.Value.ToString("dd-MMM-yyyy") + "','" + cboArea.SelectedValue + "','" + custId + "','" + Convert.ToDouble(txtCBalance.Text == "" ? "0" : txtCBalance.Text) + "','" + Convert.ToDouble(txtGrand.Text == "" ? "0" : txtGrand.Text) + "','" + Convert.ToDouble(txtCash.Text == ""||txtCash.Text == "." ? "0" : txtCash.Text) + "','" + Convert.ToDouble(txtDiscount.Text == ""||txtDiscount.Text == "." ? "0" : txtDiscount.Text) + "','" + Convert.ToDouble(txtBalance.Text == "" ? "0" : txtBalance.Text) + "','false'," +
+                                    "'" + txtVehicle.Text + "','" + txtCGST.Text + "','" + txtSGST.Text + "','" + txtIGST.Text + "','"+ cboType.Text +"','"+ chkInterState.Checked +"')";
                             Connections.Instance.ExecuteQueries(query);
                             query = "select ident_current('tblSales')";
                             DataTable dt = (DataTable)Connections.Instance.ShowDataInGridView(query);
                             int id = Convert.ToInt32(dt.Rows[0][0].ToString());
-                            if (custId != "1")
+                            if (cboType.Text.ToUpper() != "CASH")
                             {
-                                query = "update tblCustomer set creditBal='" + Convert.ToDouble(txtBalance.Text) + "' where custId='" + cboCustomer.SelectedValue + "'";
+                                query = "update tblCustomer set creditBal='" + Convert.ToDouble(txtBalance.Text == "" ? "0" : txtBalance.Text) + "' where custId='" + custId + "'";
                                 Connections.Instance.ExecuteQueries(query);
                             }
+                            query = "insert into tblSaleTrans([saleId],[itemid],[qty],[rate],[total],[Updated]," +
+                                "[cgstper],[cgst],[sgstper],[sgst],[igstper],[igst],[gst],[disc]) " +
+                                "SELECT '" + id + "',ItemId,Qty,Rate,Total,'False',"+
+                                "cgstper,cgst,sgstper,sgst,igstper,igst,gst,disc FROM tblTemp";
+                            Connections.Instance.ExecuteQueries(query);
                             for (int i = 0; i < ItemGrid.Rows.Count; i++)
                             {
-                                query = "insert into tblSaleTrans values('" + id + "','" + ItemGrid.Rows[i].Cells[2].Value + "','" + ItemGrid.Rows[i].Cells[4].Value + "','" + ItemGrid.Rows[i].Cells[5].Value + "','" + ItemGrid.Rows[i].Cells[6].Value + "','false')";
-                                Connections.Instance.ExecuteQueries(query);
+                                
                                 query = "update tblItem set Current_Stock=Current_Stock-'" + ItemGrid.Rows[i].Cells[4].Value + "' where itemId='" + ItemGrid.Rows[i].Cells[2].Value + "'";
                                 Connections.Instance.ExecuteQueries(query);
                             }
@@ -679,10 +790,10 @@ namespace InMag_V._16
                             //update
                             query = "select custId,Balance from tblSales where saleId='" + txtBillno.Tag.ToString() + "'";
                             DataTable dt = (DataTable)Connections.Instance.ShowDataInGridView(query);
-                            double newBal = Convert.ToDouble(dt.Rows[0][1].ToString()) - Convert.ToDouble(txtBalance.Text);//exbalance-balance
+                            double newBal = Convert.ToDouble(dt.Rows[0][1].ToString()) - Convert.ToDouble(txtBalance.Text == "" ? "0" : txtBalance.Text);//exbalance-balance
                             query = "update tblCustomer set creditBal=creditBal-'" + newBal + "' where custId='" + dt.Rows[0][0].ToString() + "'";
                             Connections.Instance.ExecuteQueries(query);
-                            query = "update tblSales set BillDate='" + DatePicker.Value.ToString("dd-MMM-yyyy") + "',GrandTotal='" + txtGrand.Text + "',Cash='" + Convert.ToDouble(txtCash.Text) + "',Discount='" + Convert.ToDouble(txtDiscount.Text) + "',Balance='" + Convert.ToDouble(txtBalance.Text) + "'  where saleId='" + txtBillno.Tag.ToString() + "'";
+                            query = "update tblSales set BillDate='" + DatePicker.Value.ToString("dd-MMM-yyyy") + "',GrandTotal='" + txtGrand.Text + "',Cash='" + Convert.ToDouble(txtCash.Text == "" ? "0" : txtCash.Text) + "',Discount='" + Convert.ToDouble(txtDiscount.Text == "" ? "0" : txtDiscount.Text) + "',Balance='" + Convert.ToDouble(txtBalance.Text == "" ? "0" : txtBalance.Text) + "',VehicleNo='" + txtVehicle.Text + "',CGST='" + txtCGST.Text + "',SGST='" + txtSGST.Text + "',IGST='" + txtIGST.Text + "',BillType='"+ cboType.Text +"',InterStateBill='"+ chkInterState.Checked +"' where saleId='" + txtBillno.Tag.ToString() + "'";
                             Connections.Instance.ExecuteQueries(query);
                             query = "select itemId,qty from tblSaletrans where saleId='" + txtBillno.Tag.ToString() + "'";
                             dt.Rows.Clear();
@@ -694,10 +805,13 @@ namespace InMag_V._16
                             }
                             query = "delete from tblSaletrans where saleId='" + txtBillno.Tag.ToString() + "'";
                             Connections.Instance.ExecuteQueries(query);
+                            query = "insert into tblSaleTrans([saleId],[itemid],[qty],[rate],[total],[Updated]," +
+                               "[cgstper],[cgst],[sgstper],[sgst],[igstper],[igst],[gst],[disc]) " +
+                               "SELECT '" + txtBillno.Tag.ToString() + "',ItemId,Qty,Rate,Total,'False'," +
+                               "cgstper,cgst,sgstper,sgst,igstper,igst,gst,disc FROM tblTemp";
+                            Connections.Instance.ExecuteQueries(query);
                             for (int i = 0; i < ItemGrid.Rows.Count; i++)
                             {
-                                query = "insert into tblSaleTrans values('" + txtBillno.Tag.ToString() + "','" + ItemGrid.Rows[i].Cells[2].Value + "','" + ItemGrid.Rows[i].Cells[4].Value + "','" + ItemGrid.Rows[i].Cells[5].Value + "','" + ItemGrid.Rows[i].Cells[6].Value + "','false')";
-                                Connections.Instance.ExecuteQueries(query);
                                 query = "update tblItem set Current_Stock=Current_Stock-'" + ItemGrid.Rows[i].Cells[4].Value + "' where itemId='" + ItemGrid.Rows[i].Cells[2].Value + "'";
                                 Connections.Instance.ExecuteQueries(query);
                             }
@@ -712,17 +826,17 @@ namespace InMag_V._16
                             System.Data.DataColumn BillDate = new System.Data.DataColumn("BillDate", typeof(System.String));
                             BillDate.DefaultValue = DatePicker.Value.ToString("dd-MMM-yyyy");
                             System.Data.DataColumn Customer = new System.Data.DataColumn("Customer", typeof(System.String));
-                            Customer.DefaultValue = cboCustomer.Text.ToString();
+                            Customer.DefaultValue = txtCustomer.Text.ToString();
                             System.Data.DataColumn GrandTotal = new System.Data.DataColumn("GrandTotal", typeof(System.Decimal));
-                            GrandTotal.DefaultValue = txtGrand.Text;
+                            GrandTotal.DefaultValue = txtGrand.Text==""?"0":txtGrand.Text;
                             System.Data.DataColumn Cash = new System.Data.DataColumn("Cash", typeof(System.Decimal));
-                            Cash.DefaultValue = txtCash.Text;
+                            Cash.DefaultValue = txtCash.Text==""?"0":txtCash.Text;
                             System.Data.DataColumn Discount = new System.Data.DataColumn("Discount", typeof(System.Decimal));
-                            Discount.DefaultValue = txtDiscount.Text;
+                            Discount.DefaultValue = txtDiscount.Text==""?"0":txtDiscount.Text;
                             System.Data.DataColumn Balance = new System.Data.DataColumn("Balance", typeof(System.Decimal));
-                            Balance.DefaultValue = txtBalance.Text;
+                            Balance.DefaultValue = txtBalance.Text==""?"0":txtBalance.Text;
                             System.Data.DataColumn PrevBalance = new System.Data.DataColumn("PrevBalance", typeof(System.Decimal));
-                            PrevBalance.DefaultValue = txtCBalance.Text;
+                            PrevBalance.DefaultValue = txtCBalance.Text==""?"0":txtCBalance.Text;
 
                             
 
@@ -802,15 +916,7 @@ namespace InMag_V._16
         {
 
         }
-        private void cboCustomer_TextChange(object sender, EventArgs e)
-        {
-            if (cboCustomer.Text == "")
-            {
-                txtCBalance.Text = "";
-                cboCustomer.SelectedIndex = -1;
-            }
-        }
-        
+             
 
         private void cboAreaSearch_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -1000,6 +1106,185 @@ namespace InMag_V._16
 
         }
 
+        private void txtCustomer_TextChanged(object sender, EventArgs e)
+        {
+            string Query="";
+            if (cboArea.SelectedIndex == -1)
+            {
+                CustomerGrid.Visible = false;            
+            }
+            else
+            {
+                CustomerGrid.Visible = true;
+                Query = "select * from tblCustomer where Customer like '"+ txtCustomer.Text +"%' and areaid='" + cboArea.SelectedValue + "'";
+                CustomerGrid.DataSource = Connections.Instance.ShowDataInGridView(Query);
+                CustomerGrid.ColumnHeadersVisible = false;
+                CustomerGrid.Columns[0].Visible = false;
+                CustomerGrid.Columns[2].Visible = false;
+                CustomerGrid.Columns[3].Visible = false;
+                CustomerGrid.Columns[4].Visible = false;
+                CustomerGrid.Columns[5].Visible = false;
+                CustomerGrid.Columns[6].Visible = false;
+                CustomerGrid.Columns[7].Visible = false;
+                CustomerGrid.Columns[8].Visible = false;
+                CustomerGrid.Columns[9].Visible = false;
+                CustomerGrid.Columns[10].Visible = false;
+                CustomerGrid.Columns[11].Visible = false;
+                CustomerGrid.Columns[12].Visible = false;
+                CustomerGrid.Columns[13].Visible = false;
+                CustomerGrid.Columns[14].Visible = false;
+
+                
+            }
+        }
+
+        private void CustomerGrid_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex >= 0)
+            {
+                int r = CustomerGrid.CurrentRow.Index;
+                txtCustomer.Tag = CustomerGrid.Rows[r].Cells[0].Value.ToString();
+                txtCustomer.Text = CustomerGrid.Rows[r].Cells[1].Value.ToString();
+                txtAddress.Text = CustomerGrid.Rows[r].Cells[12].Value.ToString();
+                txtPhone.Text = CustomerGrid.Rows[r].Cells[5].Value.ToString();
+                txtItems.Text = CustomerGrid.Rows[r].Cells[2].Value.ToString();
+                if (cboType.Text.ToUpper() != "CASH")
+                    txtCBalance.Text = CustomerGrid.Rows[r].Cells[7].Value.ToString();
+                else
+                    txtCBalance.Text = "0";
+                txtGSTIN.Text = CustomerGrid.Rows[r].Cells[11].Value.ToString();
+                txtState.Text = CustomerGrid.Rows[r].Cells[13].Value.ToString();
+                txtStateCode.Text = CustomerGrid.Rows[r].Cells[14].Value.ToString();
+
+                CustomerGrid.Visible = false;
+            }
+        }
+        private void CustomerGrid_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyData == Keys.Enter && CustomerGrid.Rows.Count > 0)
+            {
+                int r = CustomerGrid.CurrentRow.Index;
+                txtCustomer.Tag = CustomerGrid.Rows[r].Cells[0].Value.ToString();
+                txtAddress.Text = CustomerGrid.Rows[r].Cells[12].Value.ToString();
+                txtPhone.Text = CustomerGrid.Rows[r].Cells[5].Value.ToString();
+                if (cboType.Text.ToUpper() != "CASH")
+                    txtCBalance.Text = CustomerGrid.Rows[r].Cells[7].Value.ToString();
+                else
+                    txtCBalance.Text = "0";
+                txtGSTIN.Text = CustomerGrid.Rows[r].Cells[11].Value.ToString();
+                txtState.Text = CustomerGrid.Rows[r].Cells[13].Value.ToString();
+                txtStateCode.Text = CustomerGrid.Rows[r].Cells[14].Value.ToString();
+                txtCustomer.Text = CustomerGrid.Rows[r].Cells[1].Value.ToString();
+                CustomerGrid.Visible = false;
+            }
+            else if (e.KeyData == Keys.Escape)
+            {
+                itemView.Visible = false;
+                txtItems.Focus();
+            }
+        }
+        private void CustomerGrid_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+           
+        }
+
+        private void txtPhone_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void txtPhone_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyData == Keys.Enter)
+            {
+                txtState.Focus();
+            }
+
+        }
+        private void txtState_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyData == Keys.Enter)
+            {
+                txtStateCode.Focus();
+            }
+
+        }
+        private void txtStateCode_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyData == Keys.Enter)
+            {
+                txtGSTIN.Focus();
+            }
+
+        }
+        private void txtGSTIN_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyData == Keys.Enter)
+            {
+                txtVehicle.Focus();
+            }
+
+        }
+        private void txtVehicle_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyData == Keys.Enter)
+            {
+                txtItems.Focus();
+            }
+
+        }
+
+        private void label7_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label8_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label11_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void txtGSTIN_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void txtState_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void txtStateCode_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void cboType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cboType.Text.ToUpper() == "CASH")
+            {
+                txtCBalance.Text = "0";
+            }
+            else
+            {
+                if (txtCustomer.Tag != null)
+                {
+                    string query = "select creditBal FROM tblCustomer WHERE custId='"+ txtCustomer.Tag +"'";
+                    DataTable dt = (DataTable)Connections.Instance.ShowDataInGridView(query);
+                    txtCBalance.Text  = dt.Rows[0][0].ToString();
+                }
+            }
+        }
+
+        private void chkInterState_CheckedChanged(object sender, EventArgs e)
+        {
+            taxCalc();
+        }
 
     }
 }
