@@ -150,7 +150,7 @@ namespace InMag_V._16
                     condition = "(s.BillDate>='" + DtFrom.Value.ToString("dd-MMM-yyyy") + "' and s.BillDate<='" + DtTo.Value.ToString("dd-MMM-yyyy") + "' and s.areaId='" + cboAreaSearch.SelectedValue + "' and s.custId='" + cboCustomerSearch.SelectedValue + "') " + chCondition;
                 else if (cboAreaSearch.SelectedIndex != -1 && cboAreaSearch.Text != "")
                     condition = "(s.BillDate>='" + DtFrom.Value.ToString("dd-MMM-yyyy") + "' and s.BillDate<='" + DtTo.Value.ToString("dd-MMM-yyyy") + "' and s.areaId='" + cboAreaSearch.SelectedValue + "') " + chCondition;
-                string query = "select s.saleId,s.BillNo as Bill_No,CONVERT(VARCHAR(11),s.BillDate,106) as Bill_Date,c.Customer,s.areaId,s.custId,s.CBalance,s.GrandTotal as Bill_Amount,s.Cash,s.Discount,s.Balance from tblSales s,tblCustomer c where s.custId=c.Custid  and " + condition;
+                string query = "select s.saleId,s.BillNo as Bill_No,CONVERT(VARCHAR(11),s.BillDate,106) as Bill_Date,c.Customer,s.areaId,s.custId,s.CBalance,s.GrandTotal as Bill_Amount,s.Cash,s.Discount,s.Balance,s.VehicleNo,s.BillType,s.InterStateBill from tblSales s,tblCustomer c where s.custId=c.Custid  and " + condition;
                 SearchGrid.DataSource = Connections.Instance.ShowDataInGridView(query);
                 SearchGrid.Columns[0].Visible = false;
                 SearchGrid.Columns[1].Width = 60;
@@ -165,6 +165,9 @@ namespace InMag_V._16
                 SearchGrid.Columns[8].Visible = false;
                 SearchGrid.Columns[9].Visible = false;
                 SearchGrid.Columns[10].Visible = false;
+                SearchGrid.Columns[11].Visible = false;
+                SearchGrid.Columns[12].Visible = false;
+                SearchGrid.Columns[13].Visible = false;
             }
             catch { }
         }
@@ -349,10 +352,7 @@ namespace InMag_V._16
                 else
                     discount = Convert.ToDouble(txtDiscount.Text);
                 double cash = 0;
-                if (txtCash.Text == "." || txtCash.Text.Trim() == "")
-                    cash = 0;
-                else
-                    cash = Convert.ToDouble(txtCash.Text);
+                
                 double disc = discount / ItemGrid.RowCount;
                 string query = "UPDATE t "+
                                     "SET CGSTPER=tt.CGSTPER"+
@@ -399,6 +399,10 @@ namespace InMag_V._16
                
                 txtGST.Text = (Convert.ToDouble(txtCGST.Text == "" ? "0" : txtCGST.Text) + Convert.ToDouble(txtSGST.Text == "" ? "0" : txtSGST.Text) + Convert.ToDouble(txtIGST.Text == "" ? "0" : txtIGST.Text)).ToString();
                 txtGrand.Text = ((Convert.ToDouble(txtBillTotal.Text == "" ? "0" : txtBillTotal.Text) + Convert.ToDouble(txtGST.Text == "" ? "0" : txtGST.Text)) - discount).ToString();
+                if (txtCash.Text == "." || txtCash.Text.Trim() == "")
+                    cash = 0;
+                else
+                    cash = Convert.ToDouble(txtCash.Text);
                 txtBalance.Text = ((Convert.ToDouble(txtGrand.Text == "" ? "0" : txtGrand.Text) + Convert.ToDouble(txtCBalance.Text == "" ? "0" : txtCBalance.Text)) - cash).ToString();
             }
             catch {
@@ -614,6 +618,8 @@ namespace InMag_V._16
         private void txtGrand_TextChanged(object sender, EventArgs e)
         {
             Calculation();
+            if (cboType.Text.ToUpper()=="CASH")
+                txtCash.Text = txtGrand.Text;
         }
 
         private void cboRategroup_SelectedIndexChanged(object sender, EventArgs e)
@@ -698,12 +704,27 @@ namespace InMag_V._16
                 cboArea.SelectedValue = SearchGrid.Rows[e.RowIndex].Cells[4].Value.ToString();
                 txtCustomer.Tag = SearchGrid.Rows[e.RowIndex].Cells[5].Value.ToString();
                 txtCustomer.Text = SearchGrid.Rows[e.RowIndex].Cells[3].Value.ToString();
+                string query = "select * from tblCustomer where custId='" + txtCustomer.Tag + "'";
+                DataTable dt = (DataTable)Connections.Instance.ShowDataInGridView(query);
+                if (dt.Rows.Count > 0)
+                {
+                    txtAddress.Text = dt.Rows[0][12].ToString();
+                    txtPhone.Text = dt.Rows[0][5].ToString();
+                    txtGSTIN.Text = dt.Rows[0][11].ToString();
+                    txtState.Text = dt.Rows[0][13].ToString();
+                    txtStateCode.Text = dt.Rows[0][14].ToString();
+                    
+                }
+                cboType.Text = SearchGrid.Rows[e.RowIndex].Cells[12].Value.ToString();
                 txtCBalance.Text = SearchGrid.Rows[e.RowIndex].Cells[6].Value.ToString();
                 txtGrand.Text = SearchGrid.Rows[e.RowIndex].Cells[7].Value.ToString();
                 txtCash.Text = SearchGrid.Rows[e.RowIndex].Cells[8].Value.ToString();
                 txtDiscount.Text = SearchGrid.Rows[e.RowIndex].Cells[9].Value.ToString();
                 txtBalance.Text = SearchGrid.Rows[e.RowIndex].Cells[10].Value.ToString();
-                string query = "truncate table tblTemp";
+                txtVehicle.Text = SearchGrid.Rows[e.RowIndex].Cells[11].Value.ToString();
+                chkInterState.Checked = Convert.ToBoolean(SearchGrid.Rows[e.RowIndex].Cells[13].Value);
+
+                 query = "truncate table tblTemp";
                 Connections.Instance.ExecuteQueries(query);
                 query = "insert into tblTemp(itemCode,ItemId,ItemName,Qty,Rate,Total) select i.Item_Code,i.itemId,i.Item_Name,s.qty,s.rate,s.total from tblSaleTrans s,tblItem i where s.itemId=i.itemId and saleId='" + txtBillno.Tag.ToString() + "'";
                 Connections.Instance.ExecuteQueries(query);
@@ -788,12 +809,19 @@ namespace InMag_V._16
                         else
                         {
                             //update
-                            query = "select custId,Balance from tblSales where saleId='" + txtBillno.Tag.ToString() + "'";
+                            query = "select custId,GrandTotal,Cash,CBalance,BillType from tblSales where saleId='" + txtBillno.Tag.ToString() + "'";
                             DataTable dt = (DataTable)Connections.Instance.ShowDataInGridView(query);
-                            double newBal = Convert.ToDouble(dt.Rows[0][1].ToString()) - Convert.ToDouble(txtBalance.Text == "" ? "0" : txtBalance.Text);//exbalance-balance
-                            query = "update tblCustomer set creditBal=creditBal-'" + newBal + "' where custId='" + dt.Rows[0][0].ToString() + "'";
+                            double pbaldiff = Convert.ToDouble(txtCBalance.Text == "" || txtCBalance.Text == "." ? "0" : txtCBalance.Text) - Convert.ToDouble(dt.Rows[0][3].ToString());
+                            double billDiff = Convert.ToDouble(dt.Rows[0][1].ToString())-Convert.ToDouble(txtGrand.Text == "" || txtGrand.Text == "." ? "0" : txtGrand.Text);
+                            double cashDiff = Convert.ToDouble(txtCash.Text == "" || txtCash.Text == "." ? "0" : txtCash.Text) - Convert.ToDouble(dt.Rows[0][2].ToString());
+                            double diffBal = billDiff + cashDiff;                          
+                            //if (Convert.ToDouble(dt.Rows[0][3].ToString()) == 0)
+                            //    diffBal = (Convert.ToDouble(txtGrand.Text)-Convert.ToDouble(txtCash.Text == "" || txtCash.Text == "." ? "0" : txtCash.Text)) * -1;
+                            //if (dt.Rows[0][4].ToString().ToUpper() == "CREDIT" && cboType.Text.ToUpper() == "CASH")
+                            //    diffBal = Convert.ToDouble(txtCash.Text == "" || txtCash.Text == "." ? "0" : txtCash.Text);
+                            query = "update tblCustomer set creditBal=creditBal-'" + diffBal + "' where custId='" + dt.Rows[0][0].ToString() + "'";
                             Connections.Instance.ExecuteQueries(query);
-                            query = "update tblSales set BillDate='" + DatePicker.Value.ToString("dd-MMM-yyyy") + "',GrandTotal='" + txtGrand.Text + "',Cash='" + Convert.ToDouble(txtCash.Text == "" ? "0" : txtCash.Text) + "',Discount='" + Convert.ToDouble(txtDiscount.Text == "" ? "0" : txtDiscount.Text) + "',Balance='" + Convert.ToDouble(txtBalance.Text == "" ? "0" : txtBalance.Text) + "',VehicleNo='" + txtVehicle.Text + "',CGST='" + txtCGST.Text + "',SGST='" + txtSGST.Text + "',IGST='" + txtIGST.Text + "',BillType='"+ cboType.Text +"',InterStateBill='"+ chkInterState.Checked +"' where saleId='" + txtBillno.Tag.ToString() + "'";
+                            query = "update tblSales set BillDate='" + DatePicker.Value.ToString("dd-MMM-yyyy") + "',CBalance='"+Convert.ToDouble(txtCBalance.Text == "" || txtCBalance.Text == "." ? "0" : txtCBalance.Text)+"', GrandTotal='" + txtGrand.Text + "',Cash='" + Convert.ToDouble(txtCash.Text == "" || txtCash.Text == "." ? "0" : txtCash.Text) + "',Discount='" + Convert.ToDouble(txtDiscount.Text == "" || txtDiscount.Text == "." ? "0" : txtDiscount.Text) + "',Balance='" + Convert.ToDouble(txtBalance.Text == "" ? "0" : txtBalance.Text) + "',VehicleNo='" + txtVehicle.Text + "',CGST='" + txtCGST.Text + "',SGST='" + txtSGST.Text + "',IGST='" + txtIGST.Text + "',BillType='" + cboType.Text + "',InterStateBill='" + chkInterState.Checked + "' where saleId='" + txtBillno.Tag.ToString() + "'";
                             Connections.Instance.ExecuteQueries(query);
                             query = "select itemId,qty from tblSaletrans where saleId='" + txtBillno.Tag.ToString() + "'";
                             dt.Rows.Clear();
@@ -1144,10 +1172,8 @@ namespace InMag_V._16
             {
                 int r = CustomerGrid.CurrentRow.Index;
                 txtCustomer.Tag = CustomerGrid.Rows[r].Cells[0].Value.ToString();
-                txtCustomer.Text = CustomerGrid.Rows[r].Cells[1].Value.ToString();
                 txtAddress.Text = CustomerGrid.Rows[r].Cells[12].Value.ToString();
                 txtPhone.Text = CustomerGrid.Rows[r].Cells[5].Value.ToString();
-                txtItems.Text = CustomerGrid.Rows[r].Cells[2].Value.ToString();
                 if (cboType.Text.ToUpper() != "CASH")
                     txtCBalance.Text = CustomerGrid.Rows[r].Cells[7].Value.ToString();
                 else
@@ -1155,7 +1181,7 @@ namespace InMag_V._16
                 txtGSTIN.Text = CustomerGrid.Rows[r].Cells[11].Value.ToString();
                 txtState.Text = CustomerGrid.Rows[r].Cells[13].Value.ToString();
                 txtStateCode.Text = CustomerGrid.Rows[r].Cells[14].Value.ToString();
-
+                txtCustomer.Text = CustomerGrid.Rows[r].Cells[1].Value.ToString();
                 CustomerGrid.Visible = false;
             }
         }
@@ -1269,11 +1295,14 @@ namespace InMag_V._16
             if (cboType.Text.ToUpper() == "CASH")
             {
                 txtCBalance.Text = "0";
+                txtCash.Enabled = false;
+                txtCash.Text = txtGrand.Text;
             }
             else
             {
                 if (txtCustomer.Tag != null)
                 {
+                    txtCash.Enabled = true;
                     string query = "select creditBal FROM tblCustomer WHERE custId='"+ txtCustomer.Tag +"'";
                     DataTable dt = (DataTable)Connections.Instance.ShowDataInGridView(query);
                     txtCBalance.Text  = dt.Rows[0][0].ToString();
