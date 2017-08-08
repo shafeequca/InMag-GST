@@ -883,7 +883,7 @@ namespace InMag_V._16
                             ds.Tables["Bill"].Merge(dt);
 
                             ReportDocument cryRpt = new ReportDocument();
-                            cryRpt.Load(System.IO.Path.GetDirectoryName(Application.ExecutablePath).ToString() + @"\Reports\rptBill.rpt");
+                            cryRpt.Load(System.IO.Path.GetDirectoryName(Application.ExecutablePath).ToString() + @"\Reports\rptBill3Inch.rpt");
                             cryRpt.SetDataSource(ds);
                             cryRpt.Refresh();
                             cryRpt.PrintToPrinter(1, true, 0, 0);

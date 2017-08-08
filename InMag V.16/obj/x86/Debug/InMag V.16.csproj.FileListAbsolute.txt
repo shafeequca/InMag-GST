@@ -76,3 +76,5 @@ G:\SHAFEEQU\Projects\InMag GST\InMag-GST\InMag V.16\obj\x86\Debug\InMag_V._16.Pr
 G:\SHAFEEQU\Projects\InMag GST\InMag-GST\InMag V.16\obj\x86\Debug\InMag V.16.csproj.GenerateResource.Cache
 G:\SHAFEEQU\Projects\InMag GST\InMag-GST\InMag V.16\obj\x86\Debug\InMag.exe.manifest
 G:\SHAFEEQU\Projects\InMag GST\InMag-GST\InMag V.16\obj\x86\Debug\InMag.application
+G:\SHAFEEQU\Projects\InMag GST\InMag-GST\InMag V.16\bin\Debug\Reports\rptBill3Inch.rpt
+G:\SHAFEEQU\Projects\InMag GST\InMag-GST\InMag V.16\bin\Debug\Reports\rptBill3Inch.cs
