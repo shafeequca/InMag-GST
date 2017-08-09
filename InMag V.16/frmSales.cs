@@ -848,7 +848,8 @@ namespace InMag_V._16
                         dialogResult = MessageBox.Show("Do you want to print this bill?", "Sale Voucher", MessageBoxButtons.YesNo);
                         if (dialogResult == DialogResult.Yes)
                         {
-                            string query1 = "select i.inMalayalam as ItemsInMalayalam,t.ItemName as Items,t.Qty as Qty,t.Rate as Rate,t.Total as Total from tblTemp t,tblItem i where t.ItemId=i.ItemId";
+                            //string query1 = "select i.inMalayalam as ItemsInMalayalam,t.ItemName as Items,t.Qty as Qty,t.Rate as Rate,t.Total as Total from tblTemp t,tblItem i where t.ItemId=i.ItemId";
+
                             System.Data.DataColumn BillNo = new System.Data.DataColumn("BillNo", typeof(System.String));
                             BillNo.DefaultValue = txtBillno.Text;
                             System.Data.DataColumn BillDate = new System.Data.DataColumn("BillDate", typeof(System.String));
@@ -856,19 +857,35 @@ namespace InMag_V._16
                             System.Data.DataColumn Customer = new System.Data.DataColumn("Customer", typeof(System.String));
                             Customer.DefaultValue = txtCustomer.Text.ToString();
                             System.Data.DataColumn GrandTotal = new System.Data.DataColumn("GrandTotal", typeof(System.Decimal));
-                            GrandTotal.DefaultValue = txtGrand.Text==""?"0":txtGrand.Text;
+                            GrandTotal.DefaultValue = txtGrand.Text == "" ? "0" : txtGrand.Text;
                             System.Data.DataColumn Cash = new System.Data.DataColumn("Cash", typeof(System.Decimal));
-                            Cash.DefaultValue = txtCash.Text==""?"0":txtCash.Text;
+                            Cash.DefaultValue = txtCash.Text == "" ? "0" : txtCash.Text;
                             System.Data.DataColumn Discount = new System.Data.DataColumn("Discount", typeof(System.Decimal));
-                            Discount.DefaultValue = txtDiscount.Text==""?"0":txtDiscount.Text;
+                            Discount.DefaultValue = txtDiscount.Text == "" ? "0" : txtDiscount.Text;
                             System.Data.DataColumn Balance = new System.Data.DataColumn("Balance", typeof(System.Decimal));
-                            Balance.DefaultValue = txtBalance.Text==""?"0":txtBalance.Text;
+                            Balance.DefaultValue = txtBalance.Text == "" ? "0" : txtBalance.Text;
                             System.Data.DataColumn PrevBalance = new System.Data.DataColumn("PrevBalance", typeof(System.Decimal));
-                            PrevBalance.DefaultValue = txtCBalance.Text==""?"0":txtCBalance.Text;
+                            PrevBalance.DefaultValue = txtCBalance.Text == "" ? "0" : txtCBalance.Text;
 
                             
 
+                            string query1 = "select i.inMalayalam as ItemsInMalayalam,t.ItemName as Items,t.Qty as Qty,t.Rate as Rate,t.Total as Total,t.cgstper as CGSTPER,t.cgst AS CGST,t.sgstper as SGSTPER,t.sgst AS SGST,t.igstper as IGSTPER,t.igst AS IGST, t.gst AS GSTTotal,disc from tblTemp t,tblItem i where t.ItemId=i.ItemId";                            
                             DataTable dt = (DataTable)Connections.Instance.ShowDataInGridView(query1);
+                            DataTable dtCloned = dt.Clone();
+                            dtCloned.Columns[4].DataType = typeof(Decimal);
+                            dtCloned.Columns[5].DataType = typeof(Decimal);
+                            dtCloned.Columns[6].DataType = typeof(Decimal);
+                            dtCloned.Columns[7].DataType = typeof(Decimal);
+                            dtCloned.Columns[8].DataType = typeof(Decimal);
+                            dtCloned.Columns[9].DataType = typeof(Decimal);
+                            dtCloned.Columns[10].DataType = typeof(Decimal);
+                            dtCloned.Columns[11].DataType = typeof(Decimal);
+                            dtCloned.Columns[12].DataType = typeof(Decimal);
+
+                            foreach (DataRow row in dt.Rows)
+                            {
+                                dtCloned.ImportRow(row);
+                            }
 
                             dt.Columns.Add(PrevBalance);
                             dt.Columns.Add(Balance);
@@ -879,11 +896,31 @@ namespace InMag_V._16
                             dt.Columns.Add(Customer);
                             dt.Columns.Add(BillDate);
                             dt.Columns.Add(BillNo);
+
                             ds.Tables["Bill"].Clear();
-                            ds.Tables["Bill"].Merge(dt);
+                            ds.Tables["Bill"].Merge(dtCloned);
 
                             ReportDocument cryRpt = new ReportDocument();
-                            cryRpt.Load(System.IO.Path.GetDirectoryName(Application.ExecutablePath).ToString() + @"\Reports\rptBill3Inch.rpt");
+                            cryRpt.Load(System.IO.Path.GetDirectoryName(Application.ExecutablePath).ToString() + @"\Reports\GSTBIll.rpt");
+                            cryRpt.DataDefinition.FormulaFields[1].Text = "'" + txtBillno.Text + "'";
+                            cryRpt.DataDefinition.FormulaFields[2].Text = "'" + DatePicker.Value.ToString("dd-MM-yyyy") + "'";
+                            cryRpt.DataDefinition.FormulaFields[3].Text = "'" + txtState.Text + "'";
+                            cryRpt.DataDefinition.FormulaFields[4].Text = "'" + txtStateCode.Text + "'";
+                            cryRpt.DataDefinition.FormulaFields[5].Text = "'" + txtCustomer.Text + "'";
+                            string addd = txtAddress.Text.Replace("\r", string.Empty).Replace("\n", "^");
+                            cryRpt.DataDefinition.FormulaFields[6].Text = "'" + addd + "'";
+                            cryRpt.DataDefinition.FormulaFields[7].Text = "'" + txtGST.Text + "'";
+                            cryRpt.DataDefinition.FormulaFields[8].Text = "'" + txtVehicle.Text + "'";
+                            cryRpt.DataDefinition.FormulaFields[9].Text = "'" + txtBillTotal.Text + "'";
+                            cryRpt.DataDefinition.FormulaFields[10].Text = "'" + txtSGST.Text + "'";
+                            cryRpt.DataDefinition.FormulaFields[11].Text = "'" + txtIGST.Text + "'";
+                            double gst = Convert.ToDouble(txtCGST.Text) + Convert.ToDouble(txtSGST.Text) + Convert.ToDouble(txtIGST.Text);
+                            cryRpt.DataDefinition.FormulaFields[12].Text = "'" + gst + "'";
+                            cryRpt.DataDefinition.FormulaFields[13].Text = "'" + txtGrand.Text + "'";
+                            cryRpt.DataDefinition.FormulaFields[14].Text = "'" + txtCGST.Text + "'";
+                            cryRpt.DataDefinition.FormulaFields[18].Text = "'" + Convert.ToDouble(txtDiscount.Text).ToString() + "'";
+
+
                             cryRpt.SetDataSource(ds);
                             cryRpt.Refresh();
                             cryRpt.PrintToPrinter(1, true, 0, 0);
