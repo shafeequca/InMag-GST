@@ -76,12 +76,16 @@ namespace InMag_V._16
             {
                 if (tb.Name == "txtCash")
                 {
-                    txtDiscount.SelectionStart = 0;
-                    txtDiscount.SelectionLength = txtDiscount.Text.Length;
-                    txtDiscount.Focus();
-                }
-                else if (tb.Name == "txtDiscount")
                     btnSave_Click(null, null);
+                }
+                else if (tb.Name == "txtDiscount" && cboType.Text.ToUpper()=="CASH")
+                    btnSave_Click(null, null);
+                else if (tb.Name == "txtDiscount" && cboType.Text.ToUpper() == "CREDIT")
+                {
+                    txtCash.SelectionStart = 0;
+                    txtCash.SelectionLength = txtCash.Text.Length;
+                    txtCash.Focus();
+                }
                 else if (tb.Name == "txtItems")
                 {
                     txtQuantity.SelectionStart = 0;
@@ -419,9 +423,9 @@ namespace InMag_V._16
                 {
                     if (txtItems.Text.Trim() == "" && txtItems.Tag == null && (txtQuantity.Text.Trim() == "" || txtQuantity.Text.Trim() == "0") && (txtRate.Text.Trim() == "" || txtRate.Text.Trim() == "0"))
                     {
-                        txtCash.SelectionStart = 0;
-                        txtCash.SelectionLength = txtCash.Text.Length;
-                        txtCash.Focus();
+                        txtDiscount.SelectionStart = 0;
+                        txtDiscount.SelectionLength = txtDiscount.Text.Length;
+                        txtDiscount.Focus();
                     }
                     else
                     {
@@ -871,6 +875,15 @@ namespace InMag_V._16
 
                             string query1 = "select i.inMalayalam as ItemsInMalayalam,t.ItemName as Items,t.Qty as Qty,t.Rate as Rate,t.Total as Total,t.cgstper as CGSTPER,t.cgst AS CGST,t.sgstper as SGSTPER,t.sgst AS SGST,t.igstper as IGSTPER,t.igst AS IGST, t.gst AS GSTTotal,disc from tblTemp t,tblItem i where t.ItemId=i.ItemId";                            
                             DataTable dt = (DataTable)Connections.Instance.ShowDataInGridView(query1);
+                            dt.Columns.Add(PrevBalance);
+                            dt.Columns.Add(Balance);
+                            dt.Columns.Add(Discount);
+
+                            dt.Columns.Add(Cash);
+                            dt.Columns.Add(GrandTotal);
+                            dt.Columns.Add(Customer);
+                            dt.Columns.Add(BillDate);
+                            dt.Columns.Add(BillNo);
                             DataTable dtCloned = dt.Clone();
                             dtCloned.Columns[4].DataType = typeof(Decimal);
                             dtCloned.Columns[5].DataType = typeof(Decimal);
@@ -881,44 +894,36 @@ namespace InMag_V._16
                             dtCloned.Columns[10].DataType = typeof(Decimal);
                             dtCloned.Columns[11].DataType = typeof(Decimal);
                             dtCloned.Columns[12].DataType = typeof(Decimal);
-
+                            
                             foreach (DataRow row in dt.Rows)
                             {
                                 dtCloned.ImportRow(row);
                             }
 
-                            dt.Columns.Add(PrevBalance);
-                            dt.Columns.Add(Balance);
-                            dt.Columns.Add(Discount);
-
-                            dt.Columns.Add(Cash);
-                            dt.Columns.Add(GrandTotal);
-                            dt.Columns.Add(Customer);
-                            dt.Columns.Add(BillDate);
-                            dt.Columns.Add(BillNo);
+                         
 
                             ds.Tables["Bill"].Clear();
                             ds.Tables["Bill"].Merge(dtCloned);
 
                             ReportDocument cryRpt = new ReportDocument();
-                            cryRpt.Load(System.IO.Path.GetDirectoryName(Application.ExecutablePath).ToString() + @"\Reports\GSTBIll.rpt");
-                            cryRpt.DataDefinition.FormulaFields[1].Text = "'" + txtBillno.Text + "'";
-                            cryRpt.DataDefinition.FormulaFields[2].Text = "'" + DatePicker.Value.ToString("dd-MM-yyyy") + "'";
-                            cryRpt.DataDefinition.FormulaFields[3].Text = "'" + txtState.Text + "'";
-                            cryRpt.DataDefinition.FormulaFields[4].Text = "'" + txtStateCode.Text + "'";
-                            cryRpt.DataDefinition.FormulaFields[5].Text = "'" + txtCustomer.Text + "'";
-                            string addd = txtAddress.Text.Replace("\r", string.Empty).Replace("\n", "^");
-                            cryRpt.DataDefinition.FormulaFields[6].Text = "'" + addd + "'";
-                            cryRpt.DataDefinition.FormulaFields[7].Text = "'" + txtGST.Text + "'";
-                            cryRpt.DataDefinition.FormulaFields[8].Text = "'" + txtVehicle.Text + "'";
-                            cryRpt.DataDefinition.FormulaFields[9].Text = "'" + txtBillTotal.Text + "'";
-                            cryRpt.DataDefinition.FormulaFields[10].Text = "'" + txtSGST.Text + "'";
-                            cryRpt.DataDefinition.FormulaFields[11].Text = "'" + txtIGST.Text + "'";
-                            double gst = Convert.ToDouble(txtCGST.Text) + Convert.ToDouble(txtSGST.Text) + Convert.ToDouble(txtIGST.Text);
-                            cryRpt.DataDefinition.FormulaFields[12].Text = "'" + gst + "'";
-                            cryRpt.DataDefinition.FormulaFields[13].Text = "'" + txtGrand.Text + "'";
-                            cryRpt.DataDefinition.FormulaFields[14].Text = "'" + txtCGST.Text + "'";
-                            cryRpt.DataDefinition.FormulaFields[18].Text = "'" + Convert.ToDouble(txtDiscount.Text).ToString() + "'";
+                            cryRpt.Load(System.IO.Path.GetDirectoryName(Application.ExecutablePath).ToString() + @"\Reports\rptBill3Inch.rpt");
+                            //cryRpt.DataDefinition.FormulaFields[1].Text = "'" + txtBillno.Text + "'";
+                            //cryRpt.DataDefinition.FormulaFields[2].Text = "'" + DatePicker.Value.ToString("dd-MM-yyyy") + "'";
+                            //cryRpt.DataDefinition.FormulaFields[3].Text = "'" + txtState.Text + "'";
+                            //cryRpt.DataDefinition.FormulaFields[4].Text = "'" + txtStateCode.Text + "'";
+                            //cryRpt.DataDefinition.FormulaFields[5].Text = "'" + txtCustomer.Text + "'";
+                            //string addd = txtAddress.Text.Replace("\r", string.Empty).Replace("\n", "^");
+                            //cryRpt.DataDefinition.FormulaFields[6].Text = "'" + addd + "'";
+                            //cryRpt.DataDefinition.FormulaFields[7].Text = "'" + txtGST.Text + "'";
+                            //cryRpt.DataDefinition.FormulaFields[8].Text = "'" + txtVehicle.Text + "'";
+                            //cryRpt.DataDefinition.FormulaFields[9].Text = "'" + txtBillTotal.Text + "'";
+                            //cryRpt.DataDefinition.FormulaFields[10].Text = "'" + txtSGST.Text + "'";
+                            //cryRpt.DataDefinition.FormulaFields[11].Text = "'" + txtIGST.Text + "'";
+                            //double gst = Convert.ToDouble(txtCGST.Text) + Convert.ToDouble(txtSGST.Text) + Convert.ToDouble(txtIGST.Text);
+                            //cryRpt.DataDefinition.FormulaFields[12].Text = "'" + gst + "'";
+                            //cryRpt.DataDefinition.FormulaFields[13].Text = "'" + txtGrand.Text + "'";
+                            //cryRpt.DataDefinition.FormulaFields[14].Text = "'" + txtCGST.Text + "'";
+                            //cryRpt.DataDefinition.FormulaFields[18].Text = "'" + Convert.ToDouble(txtDiscount.Text).ToString() + "'";
 
 
                             cryRpt.SetDataSource(ds);
@@ -1220,6 +1225,7 @@ namespace InMag_V._16
                 txtStateCode.Text = CustomerGrid.Rows[r].Cells[14].Value.ToString();
                 txtCustomer.Text = CustomerGrid.Rows[r].Cells[1].Value.ToString();
                 CustomerGrid.Visible = false;
+                txtItems.Focus();
             }
         }
         private void CustomerGrid_KeyDown(object sender, KeyEventArgs e)
@@ -1239,6 +1245,7 @@ namespace InMag_V._16
                 txtStateCode.Text = CustomerGrid.Rows[r].Cells[14].Value.ToString();
                 txtCustomer.Text = CustomerGrid.Rows[r].Cells[1].Value.ToString();
                 CustomerGrid.Visible = false;
+                txtItems.Focus();
             }
             else if (e.KeyData == Keys.Escape)
             {
@@ -1337,6 +1344,7 @@ namespace InMag_V._16
             }
             else
             {
+                txtCash.Enabled = true;
                 if (txtCustomer.Tag != null)
                 {
                     txtCash.Enabled = true;

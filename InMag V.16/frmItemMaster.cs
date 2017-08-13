@@ -97,6 +97,7 @@ namespace InMag_V._16
             try
             {
                 string query = "select * from tblItem where Item_Name like '" + txtSearch.Text.Trim() + "%'  order by Item_Name";
+                dataGridView1.DataSource = null;
                 dataGridView1.DataSource = Connections.Instance.ShowDataInGridView(query);
                 dataGridView1.Columns[0].Visible = false;
                 dataGridView1.Columns[1].Visible = false;
@@ -116,9 +117,9 @@ namespace InMag_V._16
                 dataGridView1.Columns[17].Visible = false;
                 dataGridView1.Columns[18].Visible = false;
                 dataGridView1.Columns[19].Visible = false;
-                dataGridView1.Columns[20].Visible = false;
+                //dataGridView1.Columns[20].Visible = false;
             }
-            catch { }
+            catch(Exception ex) { }
         }
 
 
@@ -143,6 +144,7 @@ namespace InMag_V._16
             txtISCGST.Text = "";
             txtISSGST.Text = "";
             txtISIGST.Text = "";
+            GridShow();
             txtItemCode.Focus();
         }
 
@@ -233,7 +235,7 @@ namespace InMag_V._16
                 DialogResult dialogResult = MessageBox.Show("All data under this item would be deleted. Do you want to delete the Item", "Item Master", MessageBoxButtons.YesNo);
                 if (dialogResult == DialogResult.Yes)
                 {
-                    string query = "Delete from tblItem where custId='" + lblID.Text.Trim() + "'";
+                    string query = "Delete from tblItem where ItemId='" + lblID.Text.Trim() + "'";
                     Connections.Instance.ExecuteQueries(query);
                     GridShow();
                     btnClear_Click(null, null);
