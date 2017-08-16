@@ -143,9 +143,9 @@ namespace InMag_V._16
             {
                 string chCondition="";
                 if (chkCashEntry.Checked)
-                    chCondition = "and s.Cash=0 order by c.Customer";
+                    chCondition = "and s.Cash=0 and c.CType IN('Customer','Both') order by c.Customer";
                 else
-                    chCondition = "order by s.BillNo DESC";
+                    chCondition = " and c.CType IN('Customer','Both') order by s.BillNo DESC";
 
                 string condition = "(s.BillDate>='" + DtFrom.Value.ToString("dd-MMM-yyyy") + "' and s.BillDate<='" + DtTo.Value.ToString("dd-MMM-yyyy") + "') " + chCondition;
                 if (txtBillNoSearch.Text.Trim() != "")
@@ -768,8 +768,8 @@ namespace InMag_V._16
 
                         if (txtCustomer.Tag == null)
                         {
-                            query = "INSERT INTO tblCustomer(Customer,Phone,areaId,creditBal,GSTIN,Address,State,State_code) output INSERTED.custId " +
-                                "VALUES ('" + txtCustomer.Text + "','" + txtPhone.Text + "','" + ((cboArea.SelectedValue == null) ? 1 : cboArea.SelectedValue).ToString() + "','" + ((cboType.Text.ToUpper() == "CASH") ? "0" : txtBalance.Text).ToString() + "','" + txtGSTIN.Text + "','" + txtAddress.Text + "','" + txtState.Text + "','" + txtStateCode.Text + "')";
+                            query = "INSERT INTO tblCustomer(Customer,Phone,areaId,creditBal,GSTIN,Address,State,State_code,CType) output INSERTED.custId " +
+                                "VALUES ('" + txtCustomer.Text + "','" + txtPhone.Text + "','" + ((cboArea.SelectedValue == null) ? 1 : cboArea.SelectedValue).ToString() + "','" + ((cboType.Text.ToUpper() == "CASH") ? "0" : txtBalance.Text).ToString() + "','" + txtGSTIN.Text + "','" + txtAddress.Text + "','" + txtState.Text + "','" + txtStateCode.Text + "','Customer')";
                             custId = Connections.Instance.ExuecuteQueryWithReturn(query);
                         }
                         else
@@ -1186,7 +1186,7 @@ namespace InMag_V._16
             else
             {
                 CustomerGrid.Visible = true;
-                Query = "select * from tblCustomer where Customer like '"+ txtCustomer.Text +"%' and areaid='" + cboArea.SelectedValue + "'";
+                Query = "select * from tblCustomer where Customer like '" + txtCustomer.Text + "%' and areaid='" + cboArea.SelectedValue + "'  and CType IN('Customer','Both')";
                 CustomerGrid.DataSource = Connections.Instance.ShowDataInGridView(Query);
                 CustomerGrid.ColumnHeadersVisible = false;
                 CustomerGrid.Columns[0].Visible = false;
@@ -1203,6 +1203,7 @@ namespace InMag_V._16
                 CustomerGrid.Columns[12].Visible = false;
                 CustomerGrid.Columns[13].Visible = false;
                 CustomerGrid.Columns[14].Visible = false;
+                CustomerGrid.Columns[15].Visible = false;
 
                 
             }

@@ -65,7 +65,8 @@ namespace InMag_V._16
                 dataGridView1.Columns[12].Visible = false;
                 dataGridView1.Columns[13].Visible = false;
                 dataGridView1.Columns[14].Visible = false;
-                dataGridView1.Columns[15].Width = 80;
+                dataGridView1.Columns[15].Visible = false;
+                dataGridView1.Columns[16].Width = 80;
 
             }
             catch { }
@@ -106,8 +107,16 @@ namespace InMag_V._16
 
         private void btnSave_Click(object sender, EventArgs e)
         {
+            string ctype = "";
+            if (Party.Checked)
+                ctype = "Party";
+            else if (Both.Checked)
+                ctype = "Both";
+            else
+                ctype = "Customer";
             if (lblID.Text.Trim() == "")
             {
+                
                 //Insert
                 if (txtCustomer.Text.Trim() == "" || txtState.Text == "" || txtBalance.Text == "")
                     MessageBox.Show("Please enter the data");
@@ -116,6 +125,7 @@ namespace InMag_V._16
                     DialogResult dialogResult = MessageBox.Show("Do you want to save?", "Customer Master", MessageBoxButtons.YesNo);
                     if (dialogResult == DialogResult.Yes)
                     {
+                        
                         string query = "insert into tblCustomer("+
                                                     "Customer"+
                                                     ",Phone"+
@@ -124,8 +134,9 @@ namespace InMag_V._16
                                                     ",GSTIN"+
                                                     ",Address"+
                                                     ",State"+
-                                                    ",State_code)"+
-                                        "values('" + txtCustomer.Text.Trim() + "','" + txtPhone.Text.Trim() + "','" + cboArea.SelectedValue + "','" + Convert.ToDouble(txtBalance.Text) + "','" + txtGSTIN.Text.Trim() + "','" + txtAddress.Text.Trim() + "','" + txtState.Text.Trim() + "','" + txtStateCode.Text.Trim() + "')";
+                                                    ",State_code"+
+                                                    ",CType)"+
+                                        " values('" + txtCustomer.Text.Trim() + "','" + txtPhone.Text.Trim() + "','" + cboArea.SelectedValue + "','" + Convert.ToDouble(txtBalance.Text) + "','" + txtGSTIN.Text.Trim() + "','" + txtAddress.Text.Trim() + "','" + txtState.Text.Trim() + "','" + txtStateCode.Text.Trim() + "','" + ctype + "')";
                         Connections.Instance.ExecuteQueries(query);
                         GridShow();
                         btnClear_Click(null, null);
@@ -151,6 +162,7 @@ namespace InMag_V._16
                                               ",Address='" + txtAddress.Text.Trim() + "'"+
                                               ",State='" + txtState.Text.Trim() + "'"+
                                               ",State_code='" + txtStateCode.Text.Trim() + "'"+
+                                              ",CType='" + ctype + "'" +
                                               " where custId='" + lblID.Text.Trim() + "'";
                         Connections.Instance.ExecuteQueries(query);
                         GridShow();
@@ -173,6 +185,16 @@ namespace InMag_V._16
                 cboArea.SelectedValue = dataGridView1.Rows[e.RowIndex].Cells[6].Value.ToString(); 
                 txtBalance.Text = dataGridView1.Rows[e.RowIndex].Cells[7].Value.ToString();
                 txtStateCode.Text = dataGridView1.Rows[e.RowIndex].Cells[14].Value.ToString();
+                switch (dataGridView1.Rows[e.RowIndex].Cells[15].Value.ToString())
+                    {
+                        case "Customer": Customer.Checked = true;
+                            break;
+                        case "Party": Party.Checked = true;
+                            break;
+                        case "Both": Both.Checked = true;
+                            break;
+
+                    }
             }
         }
 
