@@ -853,7 +853,7 @@ namespace InMag_V._16
                         if (dialogResult == DialogResult.Yes)
                         {
                             //string query1 = "select i.inMalayalam as ItemsInMalayalam,t.ItemName as Items,t.Qty as Qty,t.Rate as Rate,t.Total as Total from tblTemp t,tblItem i where t.ItemId=i.ItemId";
-
+                            string reportFileName= System.Configuration.ConfigurationSettings.AppSettings["SalesReport"];
                             System.Data.DataColumn BillNo = new System.Data.DataColumn("BillNo", typeof(System.String));
                             BillNo.DefaultValue = txtBillno.Text;
                             System.Data.DataColumn BillDate = new System.Data.DataColumn("BillDate", typeof(System.String));
@@ -906,24 +906,25 @@ namespace InMag_V._16
                             ds.Tables["Bill"].Merge(dtCloned);
 
                             ReportDocument cryRpt = new ReportDocument();
-                            cryRpt.Load(System.IO.Path.GetDirectoryName(Application.ExecutablePath).ToString() + @"\Reports\rptBill3Inch.rpt");
-                            //cryRpt.DataDefinition.FormulaFields[1].Text = "'" + txtBillno.Text + "'";
-                            //cryRpt.DataDefinition.FormulaFields[2].Text = "'" + DatePicker.Value.ToString("dd-MM-yyyy") + "'";
-                            //cryRpt.DataDefinition.FormulaFields[3].Text = "'" + txtState.Text + "'";
-                            //cryRpt.DataDefinition.FormulaFields[4].Text = "'" + txtStateCode.Text + "'";
-                            //cryRpt.DataDefinition.FormulaFields[5].Text = "'" + txtCustomer.Text + "'";
-                            //string addd = txtAddress.Text.Replace("\r", string.Empty).Replace("\n", "^");
-                            //cryRpt.DataDefinition.FormulaFields[6].Text = "'" + addd + "'";
-                            //cryRpt.DataDefinition.FormulaFields[7].Text = "'" + txtGST.Text + "'";
-                            //cryRpt.DataDefinition.FormulaFields[8].Text = "'" + txtVehicle.Text + "'";
-                            //cryRpt.DataDefinition.FormulaFields[9].Text = "'" + txtBillTotal.Text + "'";
-                            //cryRpt.DataDefinition.FormulaFields[10].Text = "'" + txtSGST.Text + "'";
-                            //cryRpt.DataDefinition.FormulaFields[11].Text = "'" + txtIGST.Text + "'";
-                            //double gst = Convert.ToDouble(txtCGST.Text) + Convert.ToDouble(txtSGST.Text) + Convert.ToDouble(txtIGST.Text);
-                            //cryRpt.DataDefinition.FormulaFields[12].Text = "'" + gst + "'";
-                            //cryRpt.DataDefinition.FormulaFields[13].Text = "'" + txtGrand.Text + "'";
-                            //cryRpt.DataDefinition.FormulaFields[14].Text = "'" + txtCGST.Text + "'";
-                            //cryRpt.DataDefinition.FormulaFields[18].Text = "'" + Convert.ToDouble(txtDiscount.Text).ToString() + "'";
+                            cryRpt.Load(System.IO.Path.GetDirectoryName(Application.ExecutablePath).ToString() + reportFileName);
+
+                            cryRpt.DataDefinition.FormulaFields[1].Text = "'" + txtBillno.Text + "'";
+                            cryRpt.DataDefinition.FormulaFields[2].Text = "'" + DatePicker.Value.ToString("dd-MM-yyyy") + "'";
+                            cryRpt.DataDefinition.FormulaFields[3].Text = "'" + txtState.Text + "'";
+                            cryRpt.DataDefinition.FormulaFields[4].Text = "'" + txtStateCode.Text + "'";
+                            cryRpt.DataDefinition.FormulaFields[5].Text = "'" + txtCustomer.Text + "'";
+                            string addd = txtAddress.Text.Replace("\r", string.Empty).Replace("\n", "^");
+                            cryRpt.DataDefinition.FormulaFields[6].Text = "'" + addd + "'";
+                            cryRpt.DataDefinition.FormulaFields[7].Text = "'" + txtGST.Text + "'";
+                            cryRpt.DataDefinition.FormulaFields[8].Text = "'" + txtVehicle.Text + "'";
+                            cryRpt.DataDefinition.FormulaFields[9].Text = "'" + txtBillTotal.Text + "'";
+                            cryRpt.DataDefinition.FormulaFields[10].Text = "'" + txtSGST.Text + "'";
+                            cryRpt.DataDefinition.FormulaFields[11].Text = "'" + txtIGST.Text + "'";
+                            double gst = Convert.ToDouble(txtCGST.Text) + Convert.ToDouble(txtSGST.Text) + Convert.ToDouble(txtIGST.Text);
+                            cryRpt.DataDefinition.FormulaFields[12].Text = "'" + gst + "'";
+                            cryRpt.DataDefinition.FormulaFields[13].Text = "'" + txtGrand.Text + "'";
+                            cryRpt.DataDefinition.FormulaFields[14].Text = "'" + txtCGST.Text + "'";
+                            cryRpt.DataDefinition.FormulaFields[18].Text = "'" + Convert.ToDouble(txtDiscount.Text).ToString() + "'";
 
 
                             cryRpt.SetDataSource(ds);

@@ -16,14 +16,14 @@ namespace InMag_V._16.Reports {
     using CrystalDecisions.CrystalReports.Engine;
     
     
-    public class GSTBIll : ReportClass {
+    public class GSTBIllKapbson : ReportClass {
         
-        public GSTBIll() {
+        public GSTBIllKapbson() {
         }
         
         public override string ResourceName {
             get {
-                return "GSTBIll.rpt";
+                return "GSTBIllKapbson.rpt";
             }
             set {
                 // Do nothing
@@ -41,7 +41,7 @@ namespace InMag_V._16.Reports {
         
         public override string FullResourceName {
             get {
-                return "InMag_V._16.Reports.GSTBIll.rpt";
+                return "InMag_V._16.Reports.GSTBIllKapbson.rpt";
             }
             set {
                 // Do nothing
@@ -90,9 +90,9 @@ namespace InMag_V._16.Reports {
     }
     
     [System.Drawing.ToolboxBitmapAttribute(typeof(CrystalDecisions.Shared.ExportOptions), "report.bmp")]
-    public class CachedGSTBIll : Component, ICachedReport {
+    public class CachedGSTBIllKapbson : Component, ICachedReport {
         
-        public CachedGSTBIll() {
+        public CachedGSTBIllKapbson() {
         }
         
         [Browsable(false)]
@@ -129,7 +129,7 @@ namespace InMag_V._16.Reports {
         }
         
         public virtual CrystalDecisions.CrystalReports.Engine.ReportDocument CreateReport() {
-            GSTBIll rpt = new GSTBIll();
+            GSTBIllKapbson rpt = new GSTBIllKapbson();
             rpt.Site = this.Site;
             return rpt;
         }
