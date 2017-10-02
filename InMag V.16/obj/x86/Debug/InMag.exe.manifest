@@ -163,14 +163,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="InMag.exe" size="1239552">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="InMag.exe" size="1227264">
       <assemblyIdentity name="InMag" version="1.0.0.0" language="neutral" processorArchitecture="x86" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
-        <dsig:DigestValue>Zy37IUN5i/zuB9O2OQZsPipnko0=</dsig:DigestValue>
+        <dsig:DigestValue>zMWgD8bvG8/NZ5ikPZkjdK6nBO4=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -207,13 +207,13 @@
       <dsig:DigestValue>2iK3oisFH6kDlmwFpI2t1upX4mk=</dsig:DigestValue>
     </hash>
   </file>
-  <file name="InMag.exe.config" size="333">
+  <file name="InMag.exe.config" size="382">
     <hash>
       <dsig:Transforms>
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
-      <dsig:DigestValue>7eA2gZu+aIi6bkz7W6557hq8FMM=</dsig:DigestValue>
+      <dsig:DigestValue>s39jZZK08PKvlIJdhqfHKGDhl24=</dsig:DigestValue>
     </hash>
   </file>
 </asmv1:assembly>
