@@ -280,5 +280,22 @@ namespace InMag_V._16
             frmCashEntry frm = new frmCashEntry();
             frm.Show(this);
         }
+
+        private void partyWiseReportToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            List<Form> openForms = new List<Form>();
+            foreach (Form f in Application.OpenForms)
+                openForms.Add(f);
+            foreach (Form f in openForms)
+            {
+                if (f.Name == "frmPartyReport")
+                {
+                    f.Activate();
+                    return;
+                }
+            }
+            frmPartyReport frm = new frmPartyReport();
+            frm.Show(this);
+        }
     }
 }

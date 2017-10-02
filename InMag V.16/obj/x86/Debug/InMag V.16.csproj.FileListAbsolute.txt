@@ -81,3 +81,4 @@ G:\SHAFEEQU\Projects\InMag GST\InMag-GST\InMag V.16\bin\Debug\Reports\rptBill3In
 G:\SHAFEEQU\Projects\InMag GST\InMag-GST\InMag V.16\obj\x86\Debug\InMag_V._16.frmPurchase.resources
 G:\SHAFEEQU\Projects\InMag GST\InMag-GST\InMag V.16\bin\Debug\Reports\GSTBIllKapbson.rpt
 G:\SHAFEEQU\Projects\InMag GST\InMag-GST\InMag V.16\bin\Debug\Reports\GSTBIllKapbson.cs
+G:\SHAFEEQU\Projects\InMag GST\InMag-GST\InMag V.16\obj\x86\Debug\InMag_V._16.frmPartyReport.resources

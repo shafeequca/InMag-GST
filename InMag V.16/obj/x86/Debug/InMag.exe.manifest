@@ -163,14 +163,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="InMag.exe" size="1227264">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="InMag.exe" size="1228288">
       <assemblyIdentity name="InMag" version="1.0.0.0" language="neutral" processorArchitecture="x86" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
-        <dsig:DigestValue>zMWgD8bvG8/NZ5ikPZkjdK6nBO4=</dsig:DigestValue>
+        <dsig:DigestValue>nR2aZ/O20LYu9OhL0ihsyQGRg/4=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
