@@ -11,7 +11,10 @@ namespace InMag_V._16
     {
         private static Connections instance = null;
         string ConnectionString = @"Data Source=" + System.Configuration.ConfigurationSettings.AppSettings["Server"] + ";Initial Catalog=Inventory_GST;Integrated Security=True;";
-
+        string App_Type=System.Configuration.ConfigurationSettings.AppSettings["App_Type"];
+        
+        //string ConnectionString = @"Data Source=tcp:192.168.100.12;Initial Catalog=Inventory_GST;User ID=sa;Password=INS";
+                         
         //string ConnectionString = @"Data Source=USER-PC;Initial Catalog=Inventory;Integrated Security=True;";
         public SqlConnection con;
 
@@ -28,6 +31,10 @@ namespace InMag_V._16
         }
         public void OpenConection()
         {
+            if (App_Type == "Client")
+            {
+                ConnectionString = @"Data Source=" + System.Configuration.ConfigurationSettings.AppSettings["Server"] + ";Initial Catalog=Inventory_GST;User ID=sa;Password=" + System.Configuration.ConfigurationSettings.AppSettings["psd"];
+            }
             con = new SqlConnection(ConnectionString);
             con.Open();
         }

@@ -36,6 +36,7 @@ namespace InMag_V._16
         {
             comboLoad();
             GridShow();
+            txtSearch_TextChanged(null, null);
         }
         private void comboLoad()
         {
@@ -57,11 +58,11 @@ namespace InMag_V._16
                 dataGridView1.Columns[4].Visible = false;
                 dataGridView1.Columns[5].Visible = false;
                 dataGridView1.Columns[6].Visible = false;
-                dataGridView1.Columns[7].Width = 40;
+                dataGridView1.Columns[7].Width = 60;
                 dataGridView1.Columns[8].Visible = false;
                 dataGridView1.Columns[9].Visible = false;
                 dataGridView1.Columns[10].Visible = false;
-                dataGridView1.Columns[11].Width = 80;
+                dataGridView1.Columns[11].Visible = false;
                 dataGridView1.Columns[12].Visible = false;
                 dataGridView1.Columns[13].Visible = false;
                 dataGridView1.Columns[14].Visible = false;

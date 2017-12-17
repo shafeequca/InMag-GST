@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.btnPrint = new System.Windows.Forms.Button();
             this.ItemGrid = new System.Windows.Forms.DataGridView();
             this.btnShow = new System.Windows.Forms.Button();
@@ -44,20 +44,26 @@
             this.Party = new System.Windows.Forms.RadioButton();
             this.Customer = new System.Windows.Forms.RadioButton();
             this.label2 = new System.Windows.Forms.Label();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.rbtCashAndCredit = new System.Windows.Forms.RadioButton();
+            this.rbtCash = new System.Windows.Forms.RadioButton();
+            this.rbtCredit = new System.Windows.Forms.RadioButton();
             ((System.ComponentModel.ISupportInitialize)(this.ItemGrid)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.CustomerGrid)).BeginInit();
+            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnPrint
             // 
             this.btnPrint.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnPrint.Location = new System.Drawing.Point(706, 44);
+            this.btnPrint.Location = new System.Drawing.Point(964, 45);
             this.btnPrint.Margin = new System.Windows.Forms.Padding(2);
             this.btnPrint.Name = "btnPrint";
             this.btnPrint.Size = new System.Drawing.Size(123, 28);
             this.btnPrint.TabIndex = 97;
             this.btnPrint.Text = "&Print";
             this.btnPrint.UseVisualStyleBackColor = true;
+            this.btnPrint.Click += new System.EventHandler(this.btnPrint_Click);
             // 
             // ItemGrid
             // 
@@ -76,13 +82,13 @@
             this.ItemGrid.RowHeadersVisible = false;
             this.ItemGrid.RowTemplate.Height = 24;
             this.ItemGrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.ItemGrid.Size = new System.Drawing.Size(908, 450);
+            this.ItemGrid.Size = new System.Drawing.Size(1076, 450);
             this.ItemGrid.TabIndex = 96;
             // 
             // btnShow
             // 
             this.btnShow.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnShow.Location = new System.Drawing.Point(706, 8);
+            this.btnShow.Location = new System.Drawing.Point(964, 9);
             this.btnShow.Margin = new System.Windows.Forms.Padding(2);
             this.btnShow.Name = "btnShow";
             this.btnShow.Size = new System.Drawing.Size(123, 25);
@@ -95,7 +101,7 @@
             // 
             this.DtTo.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.DtTo.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.DtTo.Location = new System.Drawing.Point(567, 8);
+            this.DtTo.Location = new System.Drawing.Point(581, 8);
             this.DtTo.Margin = new System.Windows.Forms.Padding(2);
             this.DtTo.Name = "DtTo";
             this.DtTo.Size = new System.Drawing.Size(117, 26);
@@ -105,7 +111,7 @@
             // 
             this.DtFrom.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.DtFrom.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.DtFrom.Location = new System.Drawing.Point(455, 8);
+            this.DtFrom.Location = new System.Drawing.Point(469, 8);
             this.DtFrom.Margin = new System.Windows.Forms.Padding(2);
             this.DtFrom.Name = "DtFrom";
             this.DtFrom.Size = new System.Drawing.Size(108, 26);
@@ -117,7 +123,7 @@
             this.label3.ForeColor = System.Drawing.Color.White;
             this.label3.Location = new System.Drawing.Point(356, 11);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(94, 20);
+            this.label3.Size = new System.Drawing.Size(181, 20);
             this.label3.TabIndex = 92;
             this.label3.Text = "Date Between";
             this.label3.Click += new System.EventHandler(this.label3_Click);
@@ -153,15 +159,15 @@
             this.CustomerGrid.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.CustomerGrid.BackgroundColor = System.Drawing.Color.White;
             this.CustomerGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.CustomerGrid.DefaultCellStyle = dataGridViewCellStyle3;
-            this.CustomerGrid.Location = new System.Drawing.Point(455, 73);
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.CustomerGrid.DefaultCellStyle = dataGridViewCellStyle2;
+            this.CustomerGrid.Location = new System.Drawing.Point(469, 74);
             this.CustomerGrid.Margin = new System.Windows.Forms.Padding(2);
             this.CustomerGrid.MultiSelect = false;
             this.CustomerGrid.Name = "CustomerGrid";
@@ -178,7 +184,7 @@
             // txtCustomer
             // 
             this.txtCustomer.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtCustomer.Location = new System.Drawing.Point(455, 45);
+            this.txtCustomer.Location = new System.Drawing.Point(469, 44);
             this.txtCustomer.Margin = new System.Windows.Forms.Padding(2);
             this.txtCustomer.Name = "txtCustomer";
             this.txtCustomer.Size = new System.Drawing.Size(229, 26);
@@ -248,12 +254,61 @@
             this.label2.Text = "Type";
             this.label2.Click += new System.EventHandler(this.label2_Click);
             // 
+            // panel1
+            // 
+            this.panel1.Controls.Add(this.rbtCashAndCredit);
+            this.panel1.Controls.Add(this.rbtCash);
+            this.panel1.Controls.Add(this.rbtCredit);
+            this.panel1.Location = new System.Drawing.Point(718, 8);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(200, 69);
+            this.panel1.TabIndex = 111;
+            // 
+            // rbtCashAndCredit
+            // 
+            this.rbtCashAndCredit.AutoSize = true;
+            this.rbtCashAndCredit.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.rbtCashAndCredit.ForeColor = System.Drawing.Color.White;
+            this.rbtCashAndCredit.Location = new System.Drawing.Point(3, 48);
+            this.rbtCashAndCredit.Name = "rbtCashAndCredit";
+            this.rbtCashAndCredit.Size = new System.Drawing.Size(132, 22);
+            this.rbtCashAndCredit.TabIndex = 113;
+            this.rbtCashAndCredit.Text = "Cash and Credit";
+            this.rbtCashAndCredit.UseVisualStyleBackColor = true;
+            // 
+            // rbtCash
+            // 
+            this.rbtCash.AutoSize = true;
+            this.rbtCash.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.rbtCash.ForeColor = System.Drawing.Color.White;
+            this.rbtCash.Location = new System.Drawing.Point(3, 26);
+            this.rbtCash.Name = "rbtCash";
+            this.rbtCash.Size = new System.Drawing.Size(95, 22);
+            this.rbtCash.TabIndex = 112;
+            this.rbtCash.Text = "Cash Only";
+            this.rbtCash.UseVisualStyleBackColor = true;
+            // 
+            // rbtCredit
+            // 
+            this.rbtCredit.AutoSize = true;
+            this.rbtCredit.Checked = true;
+            this.rbtCredit.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.rbtCredit.ForeColor = System.Drawing.Color.White;
+            this.rbtCredit.Location = new System.Drawing.Point(3, 3);
+            this.rbtCredit.Name = "rbtCredit";
+            this.rbtCredit.Size = new System.Drawing.Size(99, 22);
+            this.rbtCredit.TabIndex = 111;
+            this.rbtCredit.TabStop = true;
+            this.rbtCredit.Text = "Credit Only";
+            this.rbtCredit.UseVisualStyleBackColor = true;
+            // 
             // frmPartyReport
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.MidnightBlue;
-            this.ClientSize = new System.Drawing.Size(930, 543);
+            this.ClientSize = new System.Drawing.Size(1098, 543);
+            this.Controls.Add(this.panel1);
             this.Controls.Add(this.Both);
             this.Controls.Add(this.Party);
             this.Controls.Add(this.Customer);
@@ -277,6 +332,8 @@
             this.Load += new System.EventHandler(this.frmPartyReport_Load);
             ((System.ComponentModel.ISupportInitialize)(this.ItemGrid)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.CustomerGrid)).EndInit();
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -299,5 +356,9 @@
         private System.Windows.Forms.RadioButton Party;
         private System.Windows.Forms.RadioButton Customer;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.RadioButton rbtCashAndCredit;
+        private System.Windows.Forms.RadioButton rbtCash;
+        private System.Windows.Forms.RadioButton rbtCredit;
     }
 }

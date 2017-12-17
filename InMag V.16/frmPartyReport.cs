@@ -6,11 +6,15 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using InMag_V._16.DataSet;
+using CrystalDecisions.CrystalReports.Engine;
 
 namespace InMag_V._16
 {
     public partial class frmPartyReport : Form
     {
+        private DataSet1 ds;
+
         public frmPartyReport()
         {
             InitializeComponent();
@@ -42,6 +46,7 @@ namespace InMag_V._16
         {
             try
             {
+                ds = new DataSet1();
                 string query = "select areaId,Area from tblArea order By Area";
                 cboArea.DataSource = Connections.Instance.ShowDataInGridView(query);
                 cboArea.DisplayMember = "Area";
@@ -108,8 +113,19 @@ namespace InMag_V._16
 
         private void btnShow_Click(object sender, EventArgs e)
         {
-            string Query = "select BillNo,BillDate,CGST,SGST,IGST,Discount,GrandTotal As [Bill Total],CBalance AS [Prev. Balance],Cash,Balance,BillType from tblSales where custId ='" + txtCustomer.Tag + "' and areaid='" + cboArea.SelectedValue + "'  and BillDate>='" + DtFrom.Value.ToString("yyyy-MM-dd") + "' and BillDate<='" + DtTo.Value.ToString("yyyy-MM-dd") + "'";
+            //string Query = "select BillNo,BillDate,CONVERT(DECIMAL(18,2),GrandTotal-CGST-SGST-IGST+Discount) AS [Bill Amount],CONVERT(DECIMAL(18,2),CGST) CGST,CONVERT(DECIMAL(18,2),SGST) SGST,CONVERT(DECIMAL(18,2),IGST) IGST,CONVERT(DECIMAL(18,2),Discount) Discount,CONVERT(DECIMAL(18,2),GrandTotal) As [Grand Total],CONVERT(DECIMAL(18,2),CBalance) AS [Old Bal],CONVERT(DECIMAL(18,2),Cash) Cash,CONVERT(DECIMAL(18,2),Balance) Balance,BillType from tblSales where custId ='" + txtCustomer.Tag + "' and areaid='" + cboArea.SelectedValue + "'  and BillDate>='" + DtFrom.Value.ToString("yyyy-MM-dd") + "' and BillDate<='" + DtTo.Value.ToString("yyyy-MM-dd") + "'";
+
+            string Query = "select BillNo,BillDate,CONVERT(DECIMAL(18,2),GrandTotal-CGST-SGST-IGST+Discount) AS BillAmount,CONVERT(DECIMAL(18,2),CGST+SGST+IGST) GST,CONVERT(DECIMAL(18,2),Discount) Discount,CONVERT(DECIMAL(18,2),GrandTotal) As Total,CONVERT(DECIMAL(18,2),CBalance) AS OldBalance,CONVERT(DECIMAL(18,2),GrandTotal+CBalance) AS GrandTotal,CONVERT(DECIMAL(18,2),Cash) Cash,CONVERT(DECIMAL(18,2),Balance) Balance,BillType from tblSales where custId ='" + txtCustomer.Tag + "' and areaid='" + cboArea.SelectedValue + "'  and BillDate>='" + DtFrom.Value.ToString("yyyy-MM-dd") + "' and BillDate<='" + DtTo.Value.ToString("yyyy-MM-dd") + "'";
+            if (rbtCredit.Checked)
+            {
+                Query = "select BillNo,BillDate,CONVERT(DECIMAL(18,2),GrandTotal-CGST-SGST-IGST+Discount) AS BillAmount,CONVERT(DECIMAL(18,2),CGST+SGST+IGST) GST,CONVERT(DECIMAL(18,2),Discount) Discount,CONVERT(DECIMAL(18,2),GrandTotal) As Total,CONVERT(DECIMAL(18,2),CBalance) AS OldBalance,CONVERT(DECIMAL(18,2),GrandTotal+CBalance) AS GrandTotal,CONVERT(DECIMAL(18,2),Cash) Cash,CONVERT(DECIMAL(18,2),Balance) Balance,BillType from tblSales where custId ='" + txtCustomer.Tag + "' and areaid='" + cboArea.SelectedValue + "'  and BillDate>='" + DtFrom.Value.ToString("yyyy-MM-dd") + "' and BillDate<='" + DtTo.Value.ToString("yyyy-MM-dd") + "' And BillType='Credit'";
+            }
+            if (rbtCash.Checked)
+            {
+                Query = "select BillNo,BillDate,CONVERT(DECIMAL(18,2),GrandTotal-CGST-SGST-IGST+Discount) AS BillAmount,CONVERT(DECIMAL(18,2),CGST+SGST+IGST) GST,CONVERT(DECIMAL(18,2),Discount) Discount,CONVERT(DECIMAL(18,2),GrandTotal) As Total,CONVERT(DECIMAL(18,2),CBalance) AS OldBalance,CONVERT(DECIMAL(18,2),GrandTotal+CBalance) AS GrandTotal,CONVERT(DECIMAL(18,2),Cash) Cash,CONVERT(DECIMAL(18,2),Balance) Balance,BillType from tblSales where custId ='" + txtCustomer.Tag + "' and areaid='" + cboArea.SelectedValue + "'  and BillDate>='" + DtFrom.Value.ToString("yyyy-MM-dd") + "' and BillDate<='" + DtTo.Value.ToString("yyyy-MM-dd") + "' And BillType='Cash'";
+            }
             ItemGrid.DataSource = Connections.Instance.ShowDataInGridView(Query);
+            
         }
 
         private void label3_Click(object sender, EventArgs e)
@@ -151,6 +167,36 @@ namespace InMag_V._16
             {
                 CustomerGrid.Visible = false;
                 txtCustomer.Focus();
+            }
+        }
+
+        private void radioButton2_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnPrint_Click(object sender, EventArgs e)
+        {
+            DataTable dt = (DataTable)ItemGrid.DataSource;
+
+            DialogResult dialogResult = MessageBox.Show("Do you want to print this report?", "Party Report", MessageBoxButtons.YesNo);
+            if (dialogResult == DialogResult.Yes)
+            {
+                ds.Tables["PartyReport"].Clear();
+                ds.Tables["PartyReport"].Merge(dt);
+
+                ReportDocument cryRpt = new ReportDocument();
+                cryRpt.Load(System.IO.Path.GetDirectoryName(Application.ExecutablePath).ToString() + @"\Reports\rptParty.rpt");
+
+                if (cryRpt.DataDefinition.FormulaFields.Count > 0)
+                {
+                    cryRpt.DataDefinition.FormulaFields[2].Text = "'" + txtCustomer.Text + "'";
+                    cryRpt.DataDefinition.FormulaFields[0].Text = "'" + DtFrom.Value.ToString("dd-MM-yyyy") + "'";
+                    cryRpt.DataDefinition.FormulaFields[1].Text = "'" + DtTo.Value.ToString("dd-MM-yyyy") + "'";
+                }
+                cryRpt.SetDataSource(ds);
+                cryRpt.Refresh();
+                cryRpt.PrintToPrinter(1, true, 0, 0);
             }
         }
     }

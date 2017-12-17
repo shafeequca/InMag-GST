@@ -144,8 +144,10 @@ namespace InMag_V._16
             txtISCGST.Text = "";
             txtISSGST.Text = "";
             txtISIGST.Text = "";
+            lblID.Text = "";
             GridShow();
             txtItemCode.Focus();
+
         }
 
         private void txtSearch_TextChanged(object sender, EventArgs e)

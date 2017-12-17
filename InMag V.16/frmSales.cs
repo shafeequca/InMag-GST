@@ -119,6 +119,9 @@ namespace InMag_V._16
             if (cboArea.Items.Count > 0)
             {
                 cboArea.SelectedValue = 1;
+                txtCustomer.Tag = System.Configuration.ConfigurationSettings.AppSettings["default_user_id"].ToString();
+                txtCustomer.Text = System.Configuration.ConfigurationSettings.AppSettings["default_user"].ToString();
+                CustomerGrid.Visible = false;
                 //cboAreaSearch.Text = "General";
             }
             
@@ -158,12 +161,15 @@ namespace InMag_V._16
                     condition = "(s.BillDate>='" + DtFrom.Value.ToString("dd-MMM-yyyy") + "' and s.BillDate<='" + DtTo.Value.ToString("dd-MMM-yyyy") + "' and s.areaId='" + cboAreaSearch.SelectedValue + "' and s.custId='" + cboCustomerSearch.SelectedValue + "') " + chCondition;
                 else if (cboAreaSearch.SelectedIndex != -1 && cboAreaSearch.Text != "")
                     condition = "(s.BillDate>='" + DtFrom.Value.ToString("dd-MMM-yyyy") + "' and s.BillDate<='" + DtTo.Value.ToString("dd-MMM-yyyy") + "' and s.areaId='" + cboAreaSearch.SelectedValue + "') " + chCondition;
-                string query = "select s.saleId,s.BillNo as Bill_No,CONVERT(VARCHAR(11),s.BillDate,106) as Bill_Date,c.Customer,s.areaId,s.custId,s.CBalance,s.GrandTotal as Bill_Amount,s.Cash,s.Discount,s.Balance,s.VehicleNo,s.BillType,s.InterStateBill from tblSales s,tblCustomer c where s.custId=c.Custid  and " + condition;
+                else if (cboCustomerSearch.SelectedIndex!=-1 && cboCustomerSearch.Text !="")
+                    condition = "(s.BillDate>='" + DtFrom.Value.ToString("dd-MMM-yyyy") + "' and s.BillDate<='" + DtTo.Value.ToString("dd-MMM-yyyy") + "' and s.custId='" + cboCustomerSearch.SelectedValue + "') " + chCondition;
+
+                string query = "select s.saleId,s.BillNo as Bill_No,CONVERT(VARCHAR(5),s.BillDate,3) as Bill_Date,c.Customer,s.areaId,s.custId,s.CBalance,s.GrandTotal as Bill_Amount,s.Cash,s.Discount,s.Balance,s.VehicleNo,s.BillType,s.InterStateBill,CONVERT(VARCHAR(11),s.BillDate,106) from tblSales s,tblCustomer c where s.custId=c.Custid  and " + condition;
                 SearchGrid.DataSource = Connections.Instance.ShowDataInGridView(query);
                 SearchGrid.Columns[0].Visible = false;
-                SearchGrid.Columns[1].Width = 60;
-                SearchGrid.Columns[1].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-                SearchGrid.Columns[2].Width = 90;
+                SearchGrid.Columns[1].Width = 90;
+                SearchGrid.Columns[1].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+                SearchGrid.Columns[2].Width = 80;
                 SearchGrid.Columns[3].Width = 200;
                 SearchGrid.Columns[4].Visible = false;
                 SearchGrid.Columns[5].Visible = false;
@@ -176,6 +182,7 @@ namespace InMag_V._16
                 SearchGrid.Columns[11].Visible = false;
                 SearchGrid.Columns[12].Visible = false;
                 SearchGrid.Columns[13].Visible = false;
+                SearchGrid.Columns[14].Visible = false;
             }
             catch { }
         }
@@ -197,6 +204,12 @@ namespace InMag_V._16
                 cboAreaSearch.SelectedIndex = -1;
                 cboAreaSearch.Text = "";
 
+                query = "select custId,Customer from tblCustomer order by Customer";
+                cboCustomerSearch.DataSource = Connections.Instance.ShowDataInGridView(query);
+                cboCustomerSearch.DisplayMember = "Customer";
+                cboCustomerSearch.ValueMember = "custId";
+                cboCustomerSearch.Text = "";
+                cboCustomerSearch.SelectedIndex = -1;
                 
 
                 //query = "select itemId,Item_Name from tblItem order By Item_Name";
@@ -708,8 +721,27 @@ namespace InMag_V._16
                 btnReset_Click(null, null);
                 txtGST.Text = "";
                 txtGrand.Text = "";
+                if (cboArea.Items.Count > 0 && cboArea.SelectedValue!=null)
+                {
+                    if (cboArea.SelectedValue.ToString() == "1")
+                    {
+                        txtCustomer.Tag = System.Configuration.ConfigurationSettings.AppSettings["default_user_id"].ToString();
+                        txtCustomer.Text = System.Configuration.ConfigurationSettings.AppSettings["default_user"].ToString();
+                        CustomerGrid.Visible = false;
+                        txtItems.Focus();
 
-            txtCustomer.Focus();
+                    }
+                    else
+                    {
+
+                        txtCustomer.Focus();
+                    }
+                }
+                else
+                {
+
+                    txtCustomer.Focus();
+                }
         }
 
         private void btnSearch_Click(object sender, EventArgs e)
@@ -719,8 +751,20 @@ namespace InMag_V._16
 
         private void btnReset_Click(object sender, EventArgs e)
         {
-            cboAreaSearch.SelectedValue = -1;
-            cboCustomerSearch.SelectedValue = -1;
+            string query = "select areaId,Area from tblArea order By Area";            
+            cboAreaSearch.DataSource = Connections.Instance.ShowDataInGridView(query);
+            cboAreaSearch.DisplayMember = "Area";
+            cboAreaSearch.ValueMember = "areaId";
+            cboAreaSearch.SelectedIndex = -1;
+            cboAreaSearch.Text = "";
+
+            query = "select custId,Customer from tblCustomer order by Customer";
+            cboCustomerSearch.DataSource = Connections.Instance.ShowDataInGridView(query);
+            cboCustomerSearch.DisplayMember = "Customer";
+            cboCustomerSearch.ValueMember = "custId";
+            cboCustomerSearch.Text = "";
+            cboCustomerSearch.SelectedIndex = -1;
+
             DtFrom.Value = DateTime.Today;
             DtTo.Value = DateTime.Today;
             txtBillNoSearch.Text = "";
@@ -734,7 +778,7 @@ namespace InMag_V._16
             { 
                 txtBillno.Tag = SearchGrid.Rows[e.RowIndex].Cells[0].Value.ToString();
                 txtBillno.Text = SearchGrid.Rows[e.RowIndex].Cells[1].Value.ToString();
-                DatePicker.Value = Convert.ToDateTime(SearchGrid.Rows[e.RowIndex].Cells[2].Value);
+                DatePicker.Value = Convert.ToDateTime(SearchGrid.Rows[e.RowIndex].Cells[14].Value);
                 cboArea.SelectedValue = SearchGrid.Rows[e.RowIndex].Cells[4].Value.ToString();
                 txtCustomer.Tag = SearchGrid.Rows[e.RowIndex].Cells[5].Value.ToString();
                 txtCustomer.Text = SearchGrid.Rows[e.RowIndex].Cells[3].Value.ToString();
@@ -800,7 +844,7 @@ namespace InMag_V._16
                         string query = "";
                         int custId;
 
-                        if (txtCustomer.Tag == null)
+                        if (txtCustomer.Tag == null || txtCustomer.Tag == "")
                         {
                             query = "INSERT INTO tblCustomer(Customer,Phone,areaId,creditBal,GSTIN,Address,State,State_code,CType) output INSERTED.custId " +
                                 "VALUES ('" + txtCustomer.Text + "','" + txtPhone.Text + "','" + ((cboArea.SelectedValue == null) ? 1 : cboArea.SelectedValue).ToString() + "','" + ((cboType.Text.ToUpper() == "CASH") ? "0" : txtBalance.Text).ToString() + "','" + txtGSTIN.Text + "','" + txtAddress.Text + "','" + txtState.Text + "','" + txtStateCode.Text + "','Customer')";
@@ -840,7 +884,7 @@ namespace InMag_V._16
                                 query = "update tblItem set Current_Stock=Current_Stock-'" + ItemGrid.Rows[i].Cells[4].Value + "' where itemId='" + ItemGrid.Rows[i].Cells[2].Value + "'";
                                 Connections.Instance.ExecuteQueries(query);
                             }
-                            query = "update tblSettings set BillNo='" + id + "'";
+                            query = "update tblSettings set BillNo=BillNo+1";
                             Connections.Instance.ExecuteQueries(query);
 
                         }
@@ -1016,7 +1060,8 @@ namespace InMag_V._16
 
         private void cboArea_SelectedIndexChanged(object sender, EventArgs e)
         {
-
+            txtCustomer.Text = "";
+            txtCustomer.Tag = null;
         }
 
         private void cboCustomer_SelectedIndexChanged(object sender, EventArgs e)
@@ -1027,7 +1072,7 @@ namespace InMag_V._16
 
         private void cboAreaSearch_SelectedIndexChanged(object sender, EventArgs e)
         {
-
+            cboAreaSearch_SelectionChangeCommitted(null, null);
         }
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
@@ -1177,8 +1222,13 @@ namespace InMag_V._16
                 txtQuantity.Focus();
                 lblPRate.Text = ItemDisplayGrid.Rows[r].Cells[5].Value.ToString();
                 txtItems.Text = ItemDisplayGrid.Rows[r].Cells[2].Value.ToString();
-                if (ItemDisplayGrid.Rows.Count>0) 
-                    ItemDisplayGrid.Rows.Clear();
+                try
+                {
+                    if (ItemDisplayGrid.Rows.Count > 0)
+                        ItemDisplayGrid.Rows.Clear();
+                }
+                catch (Exception ex)
+                { }
                 itemView.Visible = false;
             }
         }
@@ -1396,6 +1446,20 @@ namespace InMag_V._16
         private void chkInterState_CheckedChanged(object sender, EventArgs e)
         {
             taxCalc();
+        }
+
+        private void btnCustomerClear_Click(object sender, EventArgs e)
+        {
+            txtCustomer.Tag="";
+            txtCustomer.Text = "";
+            txtAddress.Text = "";
+            txtState.Text = "";
+            txtStateCode.Text = "";
+            txtPhone.Text = "";
+            txtGSTIN.Text = "";
+            txtVehicle.Text = "";
+            CustomerGrid.Visible = false;
+            txtCustomer.Focus();
         }
 
     }
