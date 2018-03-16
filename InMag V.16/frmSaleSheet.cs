@@ -55,15 +55,52 @@ namespace InMag_V._16
                 ds.Tables["SaleSheet"].Merge(dt);
                 ItemGrid.Columns.Clear();
                 ItemGrid.DataSource = null;
-                ItemGrid.DataSource = Connections.Instance.ShowDataInGridView(query);
+                query = "select CONVERT(DECIMAL(18,2),SUM(s.GrandTotal)) as Bill_Amount,CONVERT(DECIMAL(18,2),SUM(S.Cash)) CASH from tblSales  s where s.areaId ='" + cboArea.SelectedValue + "' and s.GrandTotal>0  and  s.BillDate>='" + DtFrom.Value.ToString("dd-MMM-yyyy") + "' and s.BillDate<='" + DtTo.Value.ToString("dd-MMM-yyyy") + "'";
+                dt.Clear();
+                dt = (DataTable)Connections.Instance.ShowDataInGridView(query);
+                double Tot = Convert.ToDouble(dt.Rows[0][0].ToString());
+                double ch = Convert.ToDouble(dt.Rows[0][1].ToString());
+
+                query = "select s.saleId,c.Customer,s.BillNo as Bill_No,s.GrandTotal as Bill_Amount,CASE WHEN s.BillNo IS NULL THEN c.creditBal ELSE s.CBalance END AS Prev_Balance,s.Balance,S.Cash from tblCustomer  c left join tblSales  s on c.custId = s.Custid and c.areaId ='" + cboArea.SelectedValue + "' and s.GrandTotal>0  and  s.BillDate>='" + DtFrom.Value.ToString("dd-MMM-yyyy") + "' and s.BillDate<='" + DtTo.Value.ToString("dd-MMM-yyyy") + "' and s.areaId='" + cboArea.SelectedValue + "'  where c.areaid='" + cboArea.SelectedValue + "' order by c.Customer ";
+                dt.Clear();
+                dt=(DataTable)Connections.Instance.ShowDataInGridView(query);
+                DataRow dr = dt.NewRow();
+                dr[1] = "Total";
+                dr[3] = 1090000.78;//Tot;
+                dr[6] = 1090000.78;// ch;
+                dt.Rows.Add(dr);
+               
+                ItemGrid.DataSource = dt;
                 ItemGrid.Columns[0].Visible = false;
                 ItemGrid.Columns[1].MinimumWidth = 350;
                 ItemGrid.Columns[5].HeaderText = "Total";
                 //ItemGrid.Columns.Add("Cash", "Cash");
                 ItemGrid.Columns.Add("Discounts", "Discounts");
                 ItemGrid.Columns.Add("Bal", "Balance");
+                DataGridViewRow row = ItemGrid.Rows[ItemGrid.Rows.Count - 1];
+                row.Height = 50;
+                row.DefaultCellStyle.Font = new Font("Arial", 14.0F, FontStyle.Bold);
+                row.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+
+                row.DefaultCellStyle.BackColor = Color.LightBlue;
+                //query = "select CONVERT(DECIMAL(18,2),SUM(s.GrandTotal)) as Bill_Amount,CONVERT(DECIMAL(18,2),SUM(S.Cash)) from tblSales  s where s.areaId ='" + cboArea.SelectedValue + "' and s.GrandTotal>0  and  s.BillDate>='" + DtFrom.Value.ToString("dd-MMM-yyyy") + "' and s.BillDate<='" + DtTo.Value.ToString("dd-MMM-yyyy") + "'";
+                //dt.Clear();                
+                //dt = (DataTable)Connections.Instance.ShowDataInGridView(query);
+                //DataRow toInsert = dt.NewRow();
+                
+                // insert in the desired place
+                //dt.Rows.InsertAt(toInsert,);
+                //DataGridViewRow row = (DataGridViewRow)ItemGrid.Rows[0].Clone();
+                //row.Cells[0].Value = "Total";
+                //row.Cells[2].Value = dt.Rows[0][0].ToString();
+                //row.Cells[5].Value = dt.Rows[0][1].ToString();
+                //ItemGrid.Rows.Add("five", "six", "seven", "eight");
+                //ItemGrid.Rows.Add(row);
+                
+                
             }
-            catch { }
+            catch (Exception ex)
+            { }
 
         }
 

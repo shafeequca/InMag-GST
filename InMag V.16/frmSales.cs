@@ -609,6 +609,7 @@ namespace InMag_V._16
                     txtQuantity.Text  = ItemGrid.Rows[rowno].Cells[4].Value.ToString();
                     txtRate.Text = ItemGrid.Rows[rowno].Cells[5].Value.ToString();
                     txtItemcode.Tag = ItemGrid.Rows[rowno].Cells[2].Value.ToString();
+                    itemView.Visible = false;
                     txtQuantity.SelectionStart = 0;
                     txtQuantity.SelectionLength = txtQuantity.Text.Length;
                     txtQuantity.Focus();
@@ -853,7 +854,8 @@ namespace InMag_V._16
                         else
                         {
                             custId = Convert.ToInt32(txtCustomer.Tag.ToString());
-                            query = "UPDATE tblCustomer SET Customer='" + txtCustomer.Text + "',Phone='" + txtPhone.Text + "',GSTIN='" + txtGSTIN.Text + "',Address='" + txtAddress.Text + "',State='" + txtState.Text + "',State_code='" + txtStateCode.Text + "' WHERE custId='"+ txtCustomer.Tag +"'";
+                            query = "UPDATE tblCustomer SET Customer='" + txtCustomer.Text + "',Phone='" + txtPhone.Text + "',GSTIN='" + txtGSTIN.Text + "',Address='" + txtAddress.Text + "',State='" + txtState.Text + "',State_code='" + txtStateCode.Text + "' WHERE custId='" + txtCustomer.Tag + "'";
+                            
                             Connections.Instance.ExecuteQueries(query);
                         }
 
@@ -901,9 +903,9 @@ namespace InMag_V._16
                             //    diffBal = (Convert.ToDouble(txtGrand.Text)-Convert.ToDouble(txtCash.Text == "" || txtCash.Text == "." ? "0" : txtCash.Text)) * -1;
                             //if (dt.Rows[0][4].ToString().ToUpper() == "CREDIT" && cboType.Text.ToUpper() == "CASH")
                             //    diffBal = Convert.ToDouble(txtCash.Text == "" || txtCash.Text == "." ? "0" : txtCash.Text);
-                            query = "update tblCustomer set creditBal=creditBal-'" + diffBal + "' where custId='" + dt.Rows[0][0].ToString() + "'";
+                            query = "update tblCustomer set creditBal=creditBal-'" + diffBal + "' where custId='" + custId + "'";
                             Connections.Instance.ExecuteQueries(query);
-                            query = "update tblSales set BillDate='" + DatePicker.Value.ToString("dd-MMM-yyyy") + "',CBalance='"+Convert.ToDouble(txtCBalance.Text == "" || txtCBalance.Text == "." ? "0" : txtCBalance.Text)+"', GrandTotal='" + txtGrand.Text + "',Cash='" + Convert.ToDouble(txtCash.Text == "" || txtCash.Text == "." ? "0" : txtCash.Text) + "',Discount='" + Convert.ToDouble(txtDiscount.Text == "" || txtDiscount.Text == "." ? "0" : txtDiscount.Text) + "',Balance='" + Convert.ToDouble(txtBalance.Text == "" ? "0" : txtBalance.Text) + "',VehicleNo='" + txtVehicle.Text + "',CGST='" + txtCGST.Text + "',SGST='" + txtSGST.Text + "',IGST='" + txtIGST.Text + "',BillType='" + cboType.Text + "',InterStateBill='" + chkInterState.Checked + "' where saleId='" + txtBillno.Tag.ToString() + "'";
+                            query = "update tblSales set custid='"+custId+"',BillDate='" + DatePicker.Value.ToString("dd-MMM-yyyy") + "',CBalance='"+Convert.ToDouble(txtCBalance.Text == "" || txtCBalance.Text == "." ? "0" : txtCBalance.Text)+"', GrandTotal='" + txtGrand.Text + "',Cash='" + Convert.ToDouble(txtCash.Text == "" || txtCash.Text == "." ? "0" : txtCash.Text) + "',Discount='" + Convert.ToDouble(txtDiscount.Text == "" || txtDiscount.Text == "." ? "0" : txtDiscount.Text) + "',Balance='" + Convert.ToDouble(txtBalance.Text == "" ? "0" : txtBalance.Text) + "',VehicleNo='" + txtVehicle.Text + "',CGST='" + txtCGST.Text + "',SGST='" + txtSGST.Text + "',IGST='" + txtIGST.Text + "',BillType='" + cboType.Text + "',InterStateBill='" + chkInterState.Checked + "' where saleId='" + txtBillno.Tag.ToString() + "'";
                             Connections.Instance.ExecuteQueries(query);
                             query = "select itemId,qty from tblSaletrans where saleId='" + txtBillno.Tag.ToString() + "'";
                             dt.Rows.Clear();
@@ -1433,11 +1435,14 @@ namespace InMag_V._16
             else
             {
                 txtCash.Enabled = true;
-                if (txtCustomer.Tag != null)
+                if (txtCustomer.Tag != null && txtCustomer.Tag.ToString()!="")
                 {
                     txtCash.Enabled = true;
+                    txtCash.Text = "0";
+
                     string query = "select creditBal FROM tblCustomer WHERE custId='"+ txtCustomer.Tag +"'";
                     DataTable dt = (DataTable)Connections.Instance.ShowDataInGridView(query);
+                    if (dt.Rows.Count>0)
                     txtCBalance.Text  = dt.Rows[0][0].ToString();
                 }
             }

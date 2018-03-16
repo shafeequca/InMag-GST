@@ -47,6 +47,7 @@
             this.saleSheetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.orderedItemsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.stockReportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.partyWiseReportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
@@ -56,7 +57,6 @@
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripButton4 = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
-            this.partyWiseReportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -176,6 +176,7 @@
             this.cashEntryToolStripMenuItem.Name = "cashEntryToolStripMenuItem";
             this.cashEntryToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
             this.cashEntryToolStripMenuItem.Text = "Cash Entry";
+            this.cashEntryToolStripMenuItem.Visible = false;
             this.cashEntryToolStripMenuItem.Click += new System.EventHandler(this.cashEntryToolStripMenuItem_Click);
             // 
             // reportsToolStripMenuItem
@@ -211,6 +212,13 @@
             this.stockReportToolStripMenuItem.Size = new System.Drawing.Size(192, 22);
             this.stockReportToolStripMenuItem.Text = "Stock Report";
             this.stockReportToolStripMenuItem.Click += new System.EventHandler(this.stockReportToolStripMenuItem_Click);
+            // 
+            // partyWiseReportToolStripMenuItem
+            // 
+            this.partyWiseReportToolStripMenuItem.Name = "partyWiseReportToolStripMenuItem";
+            this.partyWiseReportToolStripMenuItem.Size = new System.Drawing.Size(192, 22);
+            this.partyWiseReportToolStripMenuItem.Text = "Party Wise Report";
+            this.partyWiseReportToolStripMenuItem.Click += new System.EventHandler(this.partyWiseReportToolStripMenuItem_Click);
             // 
             // toolStrip1
             // 
@@ -289,13 +297,6 @@
             this.toolStripSeparator4.Name = "toolStripSeparator4";
             this.toolStripSeparator4.Size = new System.Drawing.Size(6, 25);
             // 
-            // partyWiseReportToolStripMenuItem
-            // 
-            this.partyWiseReportToolStripMenuItem.Name = "partyWiseReportToolStripMenuItem";
-            this.partyWiseReportToolStripMenuItem.Size = new System.Drawing.Size(192, 22);
-            this.partyWiseReportToolStripMenuItem.Text = "Party Wise Report";
-            this.partyWiseReportToolStripMenuItem.Click += new System.EventHandler(this.partyWiseReportToolStripMenuItem_Click);
-            // 
             // frmMenu
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -310,7 +311,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.IsMdiContainer = true;
             this.MainMenuStrip = this.menuStrip1;
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "frmMenu";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "InMag 1.6";

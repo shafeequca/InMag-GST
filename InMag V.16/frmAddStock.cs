@@ -88,10 +88,10 @@ namespace InMag_V._16
         {
             string query = "select ROW_NUMBER() OVER(ORDER BY id) AS Row,itemid,itemname,qty from tblTempStock;";
             ItemGrid.DataSource = Connections.Instance.ShowDataInGridView(query);
-            ItemGrid.Columns[0].Width = 50;
+            ItemGrid.Columns[0].Width = 40;
             ItemGrid.Columns[1].Visible = false;
-            ItemGrid.Columns[2].Width = 386;
-            ItemGrid.Columns[3].Width = 125;
+            ItemGrid.Columns[2].Width = 285;
+            ItemGrid.Columns[3].Width = 95;
             if (ItemGrid.Rows.Count > 0)
             {
                 ItemGrid.FirstDisplayedScrollingRowIndex = ItemGrid.RowCount - 1;

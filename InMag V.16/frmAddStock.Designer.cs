@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.cboStaff = new System.Windows.Forms.ComboBox();
             this.label5 = new System.Windows.Forms.Label();
             this.DatePicker = new System.Windows.Forms.DateTimePicker();
@@ -74,7 +75,7 @@
             this.DatePicker.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.DatePicker.Format = System.Windows.Forms.DateTimePickerFormat.Short;
             this.DatePicker.Location = new System.Drawing.Point(353, 38);
-            this.DatePicker.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.DatePicker.Margin = new System.Windows.Forms.Padding(2);
             this.DatePicker.Name = "DatePicker";
             this.DatePicker.Size = new System.Drawing.Size(102, 26);
             this.DatePicker.TabIndex = 50;
@@ -96,7 +97,7 @@
             this.cboItems.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cboItems.FormattingEnabled = true;
             this.cboItems.Location = new System.Drawing.Point(67, 99);
-            this.cboItems.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.cboItems.Margin = new System.Windows.Forms.Padding(2);
             this.cboItems.Name = "cboItems";
             this.cboItems.Size = new System.Drawing.Size(290, 28);
             this.cboItems.TabIndex = 1;
@@ -105,7 +106,7 @@
             // 
             this.cmdItemClear.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cmdItemClear.Location = new System.Drawing.Point(31, 100);
-            this.cmdItemClear.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.cmdItemClear.Margin = new System.Windows.Forms.Padding(2);
             this.cmdItemClear.Name = "cmdItemClear";
             this.cmdItemClear.Size = new System.Drawing.Size(34, 19);
             this.cmdItemClear.TabIndex = 95;
@@ -123,8 +124,16 @@
             this.ItemGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.ItemGrid.ColumnHeadersVisible = false;
             this.ItemGrid.ContextMenuStrip = this.contextMenuStrip1;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.ItemGrid.DefaultCellStyle = dataGridViewCellStyle1;
             this.ItemGrid.Location = new System.Drawing.Point(28, 122);
-            this.ItemGrid.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.ItemGrid.Margin = new System.Windows.Forms.Padding(2);
             this.ItemGrid.MultiSelect = false;
             this.ItemGrid.Name = "ItemGrid";
             this.ItemGrid.ReadOnly = true;
@@ -160,7 +169,7 @@
             // 
             this.txtQuantity.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtQuantity.Location = new System.Drawing.Point(354, 99);
-            this.txtQuantity.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.txtQuantity.Margin = new System.Windows.Forms.Padding(2);
             this.txtQuantity.Name = "txtQuantity";
             this.txtQuantity.Size = new System.Drawing.Size(102, 26);
             this.txtQuantity.TabIndex = 2;
@@ -202,7 +211,7 @@
             // 
             this.btnSave.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnSave.Location = new System.Drawing.Point(280, 441);
-            this.btnSave.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnSave.Margin = new System.Windows.Forms.Padding(2);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(86, 34);
             this.btnSave.TabIndex = 3;
@@ -214,7 +223,7 @@
             // 
             this.btnClear.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnClear.Location = new System.Drawing.Point(370, 441);
-            this.btnClear.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnClear.Margin = new System.Windows.Forms.Padding(2);
             this.btnClear.Name = "btnClear";
             this.btnClear.Size = new System.Drawing.Size(86, 34);
             this.btnClear.TabIndex = 5;
