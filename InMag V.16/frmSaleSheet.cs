@@ -66,8 +66,8 @@ namespace InMag_V._16
                 dt=(DataTable)Connections.Instance.ShowDataInGridView(query);
                 DataRow dr = dt.NewRow();
                 dr[1] = "Total";
-                dr[3] = 1090000.78;//Tot;
-                dr[6] = 1090000.78;// ch;
+                dr[3] = Tot;//Tot;
+                dr[6] = ch;// ch;
                 dt.Rows.Add(dr);
                
                 ItemGrid.DataSource = dt;
