@@ -297,5 +297,10 @@ namespace InMag_V._16
             frmPartyReport frm = new frmPartyReport();
             frm.Show(this);
         }
+
+        private void toolStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+
+        }
     }
 }
