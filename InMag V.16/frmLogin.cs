@@ -40,5 +40,16 @@ namespace InMag_V._16
                 this.Close();
             }
         }
+
+        private void frmLogin_Load(object sender, EventArgs e)
+        {
+            DateTime dt;
+            dt=Convert.ToDateTime("01-01-2030");
+            if (DateTime.Today.Date>=dt)
+            {
+                MessageBox.Show("Your trial period expired. Please contact your administrator");
+                btnClear_Click(null, null);
+            }
+        }
     }
 }

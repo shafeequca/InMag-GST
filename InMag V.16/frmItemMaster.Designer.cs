@@ -28,8 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle13 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle14 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.txtMRP = new System.Windows.Forms.TextBox();
             this.label8 = new System.Windows.Forms.Label();
             this.txtMalayalam = new System.Windows.Forms.TextBox();
@@ -193,20 +193,20 @@
             this.dataGridView1.AllowUserToOrderColumns = true;
             this.dataGridView1.AllowUserToResizeColumns = false;
             this.dataGridView1.AllowUserToResizeRows = false;
-            dataGridViewCellStyle13.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            this.dataGridView1.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle13;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            this.dataGridView1.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             this.dataGridView1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dataGridView1.BackgroundColor = System.Drawing.Color.MidnightBlue;
             this.dataGridView1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewCellStyle14.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle14.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle14.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle14.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle14.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle14.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle14.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataGridView1.DefaultCellStyle = dataGridViewCellStyle14;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataGridView1.DefaultCellStyle = dataGridViewCellStyle2;
             this.dataGridView1.Location = new System.Drawing.Point(499, 9);
             this.dataGridView1.MultiSelect = false;
             this.dataGridView1.Name = "dataGridView1";
@@ -428,6 +428,7 @@
             this.txtCGST.Name = "txtCGST";
             this.txtCGST.Size = new System.Drawing.Size(87, 26);
             this.txtCGST.TabIndex = 11;
+            this.txtCGST.Text = "0";
             this.txtCGST.TextChanged += new System.EventHandler(this.txtCGST_TextChanged);
             // 
             // txtIGST
@@ -437,6 +438,7 @@
             this.txtIGST.Name = "txtIGST";
             this.txtIGST.Size = new System.Drawing.Size(87, 26);
             this.txtIGST.TabIndex = 13;
+            this.txtIGST.Text = "0";
             // 
             // txtSGST
             // 
@@ -445,6 +447,7 @@
             this.txtSGST.Name = "txtSGST";
             this.txtSGST.Size = new System.Drawing.Size(87, 26);
             this.txtSGST.TabIndex = 12;
+            this.txtSGST.Text = "0";
             // 
             // label12
             // 
@@ -464,6 +467,7 @@
             this.txtISSGST.Name = "txtISSGST";
             this.txtISSGST.Size = new System.Drawing.Size(87, 26);
             this.txtISSGST.TabIndex = 15;
+            this.txtISSGST.Text = "0";
             // 
             // txtISIGST
             // 
@@ -472,6 +476,7 @@
             this.txtISIGST.Name = "txtISIGST";
             this.txtISIGST.Size = new System.Drawing.Size(87, 26);
             this.txtISIGST.TabIndex = 16;
+            this.txtISIGST.Text = "0";
             // 
             // txtISCGST
             // 
@@ -480,6 +485,7 @@
             this.txtISCGST.Name = "txtISCGST";
             this.txtISCGST.Size = new System.Drawing.Size(87, 26);
             this.txtISCGST.TabIndex = 14;
+            this.txtISCGST.Text = "0";
             // 
             // label17
             // 

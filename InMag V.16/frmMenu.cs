@@ -6,12 +6,18 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Microsoft.SqlServer.Management.Smo;
+using Microsoft.SqlServer.Management.Common;
+using System.IO;
+using InMag_V._16.DataSet;
+using CrystalDecisions.CrystalReports.Engine;
 
 namespace InMag_V._16
 {
     public partial class frmMenu : Form
     {
         public string user;
+        DataSet1 ds;
         public frmMenu()
         {
             InitializeComponent();
@@ -36,6 +42,7 @@ namespace InMag_V._16
 
         private void frmMenu_Load(object sender, EventArgs e)
         {
+            ds = new DataSet1();
             frmLogin frm  = new frmLogin();
             frm.ShowDialog();
         }
@@ -300,6 +307,69 @@ namespace InMag_V._16
 
         private void toolStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
+
+        }
+
+        private void backupToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+
+                string App_Type = System.Configuration.ConfigurationSettings.AppSettings["App_Type"];
+
+                Backup bkpDatabase = new Backup();
+                bkpDatabase.Action = BackupActionType.Database;
+                bkpDatabase.Database = "Inventory_GST";
+                ServerConnection srvConn = new ServerConnection(System.Configuration.ConfigurationSettings.AppSettings["Server"].ToString());
+                srvConn.LoginSecure = true;
+                string Location = System.Configuration.ConfigurationSettings.AppSettings["Backup_Location"] + @"\Backup_" + DateTime.Today.ToString("ddMMyyyyHHmmss") + ".bak";
+                if (File.Exists(Location)==true)
+                {
+                File.Delete(Location);
+                }
+                //BackupDeviceItem bkpDevice = new BackupDeviceItem(Location + @"\Backup_" + DateTime.Now + ".bak", DeviceType.File);
+                BackupDeviceItem bkpDevice = new BackupDeviceItem(Location, DeviceType.File);
+
+                bkpDatabase.Devices.Add(bkpDevice);
+
+                Server srvr;
+                if (App_Type == "Client")
+                {
+                    // Give the login username
+                    srvConn.Login = "sa";
+                    // Give the login password
+                    srvConn.Password = System.Configuration.ConfigurationSettings.AppSettings["psd"].ToString();
+                }
+                srvr = new Server(srvConn);
+                bkpDatabase.SqlBackup(srvr);
+
+                MessageBox.Show("Backup succeeded");
+            }
+            catch (Exception x)
+            {
+                MessageBox.Show("ERROR: An error ocurred while backing up DataBase" + x, "Server Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+            
+        }
+
+        private void partyCreditToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string query = "select Customer AS Party,Convert(Decimal(18,2),creditBal) CreditAmount,Address AS Test from tblCustomer where Customer<>'General' and creditBal<>0 order by 1";
+                DataTable dt = (DataTable)Connections.Instance.ShowDataInGridView(query);
+                ds.Tables["PartyCredit"].Clear();
+                ds.Tables["PartyCredit"].Merge(dt);
+                ReportDocument cryRpt = new ReportDocument();
+                cryRpt.Load(System.IO.Path.GetDirectoryName(Application.ExecutablePath).ToString() + @"\Reports\rptPartyCredit.rpt");
+                cryRpt.SetDataSource(ds);
+                cryRpt.Refresh();
+                cryRpt.PrintToPrinter(1, true, 0, 0);
+
+            }
+            catch (Exception ex)
+            { }
 
         }
     }
